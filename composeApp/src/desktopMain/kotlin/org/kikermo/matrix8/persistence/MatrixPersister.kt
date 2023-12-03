@@ -1,9 +1,7 @@
 package org.kikermo.matrix8.persistence
 
-import javax.inject.Inject
-import javax.inject.Singleton
+import org.kikermo.matrix8.di.Inject
 
-@Singleton
 class MatrixPersister @Inject constructor() {
     private var matrix = Array(8) { BooleanArray(8) }
 

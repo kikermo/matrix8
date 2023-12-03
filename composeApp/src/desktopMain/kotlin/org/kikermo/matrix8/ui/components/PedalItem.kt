@@ -71,8 +71,8 @@ fun PedalItem(
 }
 
 private fun Boolean.toImagerResource() = when (this) {
-    true -> "drawable.led_on.xml"
-    false -> "drawable.led_off.xml"
+    true -> "led_on.xml"
+    false -> "led_off.xml"
 }
 
 @Preview

@@ -5,8 +5,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
 
     alias(libs.plugins.jetbrainsCompose)
-
-    kotlin("kapt")
 }
 
 kotlin {
@@ -25,8 +23,6 @@ kotlin {
             implementation(compose.uiTooling)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-            implementation(libs.hilt.android)
-            configurations["kapt"].dependencies.add(project.dependencies.create(libs.hilt.compiler.get()))
         }
     }
 }

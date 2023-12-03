@@ -1,8 +1,8 @@
 package org.kikermo.matrix8.interactors
 
+import org.kikermo.matrix8.di.Inject
 import org.kikermo.matrix8.model.Pedal
 import org.kikermo.matrix8.persistence.MatrixPersister
-import javax.inject.Inject
 
 class SetMatrix8UseCase @Inject constructor(
     private val matrixPersister: MatrixPersister
