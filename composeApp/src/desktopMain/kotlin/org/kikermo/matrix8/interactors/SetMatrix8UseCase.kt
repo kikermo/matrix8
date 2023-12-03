@@ -1,15 +1,13 @@
 package org.kikermo.matrix8.interactors
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.kikermo.matrix8.model.Pedal
 import org.kikermo.matrix8.persistence.MatrixPersister
 import javax.inject.Inject
 
-class SetMatrix8Interactor @Inject constructor(
+class SetMatrix8UseCase @Inject constructor(
     private val matrixPersister: MatrixPersister
 ) {
-    suspend operator fun invoke(pedals: List<Pedal>) {
+    suspend operator fun invoke(pedals: List<Pedal>): List<Pedal> {
 //        return withContext(Dispatchers.IO) {
 //            try {
 //                val commands = getCommandList(pedals)
@@ -29,6 +27,7 @@ class SetMatrix8Interactor @Inject constructor(
 //                e.printStackTrace()
 //            }
 //        }
+        return pedals
     }
 
 
@@ -92,6 +91,7 @@ class SetMatrix8Interactor @Inject constructor(
                         matrix[0][pedal.ioChannel] = true
                         matrix[pedal.ioChannel][enabledPedals[index + 1].ioChannel] = true
                     }
+
                     enabledPedals.lastIndex -> matrix[pedal.ioChannel][0] = true
                     else -> matrix[pedal.ioChannel][enabledPedals[index + 1].ioChannel] = true
                 }

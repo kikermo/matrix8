@@ -1,5 +1,6 @@
 package org.kikermo.matrix8.ui.components
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -50,7 +50,7 @@ fun PedalItem(
         }
 
         Image(
-            painter = painterResource(id = enabled.toImagerResourceId()),
+            painter = painterResource( enabled.toImagerResource()),
             contentDescription = "LED",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -59,7 +59,7 @@ fun PedalItem(
         )
 
         Image(
-            painter = painterResource(id = CommonR.drawable.ic_footswitch),
+            painter = painterResource( "ic_footswitch.xml"),
             contentDescription = "Footswitch",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -70,9 +70,9 @@ fun PedalItem(
     }
 }
 
-private fun Boolean.toImagerResourceId() = when (this) {
-    true -> CommonR.drawable.led_on
-    false -> CommonR.drawable.led_off
+private fun Boolean.toImagerResource() = when (this) {
+    true -> "drawable.led_on.xml"
+    false -> "drawable.led_off.xml"
 }
 
 @Preview
