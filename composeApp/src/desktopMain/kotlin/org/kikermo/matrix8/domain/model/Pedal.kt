@@ -1,4 +1,4 @@
-package org.kikermo.matrix8.model
+package org.kikermo.matrix8.domain.model
 
 import androidx.compose.ui.graphics.Color
 

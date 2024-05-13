@@ -1,8 +1,8 @@
-package org.kikermo.matrix8.interactors
+package org.kikermo.matrix8.domain
 
 import androidx.compose.ui.graphics.Color
 import org.kikermo.matrix8.di.Inject
-import org.kikermo.matrix8.model.Pedal
+import org.kikermo.matrix8.domain.model.Pedal
 
 class GetMatrix8PedalsUseCase @Inject constructor(
 ) {

@@ -3,12 +3,12 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-
     alias(libs.plugins.jetbrainsCompose)
 }
 
 kotlin {
     jvm("desktop")
+    val native = linuxArm64("native")
 
     sourceSets {
         val desktopMain by getting
@@ -23,7 +23,22 @@ kotlin {
             implementation(compose.uiTooling)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+
         }
+        val nativeMain by getting
+            nativeMain.dependencies {
+            implementation(libs.ktgp)
+            implementation(kotlin("stdlib"))
+        }
+    }
+    configure(listOf(native)) {
+        val libs = "$buildDir/native/libs/usr/lib/aarch64-linux-gnu/"
+
+        binaries.executable()
+//        binaries.all {
+//            linkTask.dependsOn(tasks.getByPath(":nativeLibs"))
+//            linkerOpts.add("-L$libs")
+//        }
     }
 
 //    dependencies {

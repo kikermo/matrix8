@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.kikermo.matrix8.model.Pedal
+import org.kikermo.matrix8.domain.model.Pedal
 import org.kikermo.matrix8.presentation.Matrix8ViewModel
 import org.kikermo.matrix8.presentation.matrix8ViewmodelFactory
 import org.kikermo.matrix8.ui.components.PedalItem

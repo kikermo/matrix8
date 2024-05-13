@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.kikermo.matrix8.di.Inject
-import org.kikermo.matrix8.interactors.GetMatrix8PedalsUseCase
-import org.kikermo.matrix8.interactors.SetMatrix8UseCase
-import org.kikermo.matrix8.model.Pedal
+import org.kikermo.matrix8.domain.GetMatrix8PedalsUseCase
+import org.kikermo.matrix8.domain.SetMatrix8UseCase
+import org.kikermo.matrix8.domain.model.Pedal
 
 class Matrix8ViewModel @Inject constructor(
     private val setMatrix8UseCase: SetMatrix8UseCase,

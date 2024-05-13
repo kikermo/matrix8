@@ -1,33 +1,40 @@
-package org.kikermo.matrix8.interactors
+package org.kikermo.matrix8.domain
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.kikermo.matrix8.di.Inject
-import org.kikermo.matrix8.model.Pedal
-import org.kikermo.matrix8.persistence.MatrixPersister
+import org.kikermo.matrix8.domain.model.Pedal
+import org.kikermo.matrix8.repository.I2CPeripheral
+import org.kikermo.matrix8.repository.persistence.MatrixPersister
 
 class SetMatrix8UseCase @Inject constructor(
-    private val matrixPersister: MatrixPersister
+    private val matrixPersister: MatrixPersister,
+    private val i2CPeripheral: I2CPeripheral,
 ) {
     suspend operator fun invoke(pedals: List<Pedal>): List<Pedal> {
-//        return withContext(Dispatchers.IO) {
-//            try {
-//                val commands = getCommandList(pedals)
-//                if (commands.isEmpty()) {
-//                    return@withContext
-//                }
+        return withContext(Dispatchers.IO) {
+            try {
+                val commands = getCommandList(pedals)
+                if (commands.isEmpty()) {
+                    return@withContext pedals
+                }
 //                val peripheralManager = PeripheralManager.getInstance()
 //                val i2cDevice = peripheralManager.openI2cDevice("I2C1", DEVICE_ADDRESS)
-//                println("------\nCommands ")
-//                commands.forEach { command ->
-//                    command.forEach { println(it.toUByte().toString(2)) }
-//                    println(" ")
+                i2CPeripheral.open(DEVICE_ADDRESS)
+                println("------\nCommands ")
+                commands.forEach { command ->
+                    command.forEach { println(it.toUByte().toString(2)) }
+                    println(" ")
 //                    i2cDevice.write(command, command.size)
-//                }
+                    i2CPeripheral.sendData(command)
+                }
 //                i2cDevice.close()
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
-//        }
-        return pedals
+                i2CPeripheral.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return@withContext pedals
+        }
     }
 
 

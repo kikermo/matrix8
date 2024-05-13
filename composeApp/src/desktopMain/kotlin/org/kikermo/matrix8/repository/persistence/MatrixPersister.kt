@@ -1,4 +1,4 @@
-package org.kikermo.matrix8.persistence
+package org.kikermo.matrix8.repository.persistence
 
 import org.kikermo.matrix8.di.Inject
 
