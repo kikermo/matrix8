@@ -1,6 +1,7 @@
 package org.kikermo.matrix8.presentation
 
 import androidx.compose.runtime.Composable
+import org.kikermo.matrix8.di.i2CPeripheralBuilder
 import org.kikermo.matrix8.domain.GetMatrix8PedalsUseCase
 import org.kikermo.matrix8.domain.SetMatrix8UseCase
 import org.kikermo.matrix8.repository.I2CPeripheral
@@ -18,5 +19,3 @@ fun matrix8ViewmodelFactory(): Matrix8ViewModel {
         getMatrix8Pedals = GetMatrix8PedalsUseCase(),
     )
 }
-
-expect fun i2CPeripheralBuilder(): I2CPeripheral

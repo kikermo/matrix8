@@ -14,7 +14,7 @@ class SetMatrix8UseCase @Inject constructor(
     suspend operator fun invoke(pedals: List<Pedal>): List<Pedal> {
         return withContext(Dispatchers.IO) {
             try {
-                val commands = getCommandList(pedals)
+                val commands = getCommandValueList(pedals)
                 if (commands.isEmpty()) {
                     return@withContext pedals
                 }
@@ -22,11 +22,12 @@ class SetMatrix8UseCase @Inject constructor(
 //                val i2cDevice = peripheralManager.openI2cDevice("I2C1", DEVICE_ADDRESS)
                 i2CPeripheral.open(DEVICE_ADDRESS)
                 println("------\nCommands ")
-                commands.forEach { command ->
-                    command.forEach { println(it.toUByte().toString(2)) }
+                commands.forEach { (command,value) ->
+//                    command.forEach { println(it.toUByte().toString(2)) }
+                    println(command + value)
                     println(" ")
 //                    i2cDevice.write(command, command.size)
-                    i2CPeripheral.sendData(command)
+                    i2CPeripheral.sendData(Pair(command,value))
                 }
 //                i2cDevice.close()
                 i2CPeripheral.close()
@@ -38,7 +39,7 @@ class SetMatrix8UseCase @Inject constructor(
     }
 
 
-    private fun getCommandList(pedals: List<Pedal>): List<ByteArray> {
+    private fun getCommandValueList(pedals: List<Pedal>): List<Pair<Byte,Byte>> {
         val oldMatrix = matrixPersister.getPreviousMatrix()
         val newMatrix = getMatrix(pedals)
         matrixPersister.updateMatrix(newMatrix)
@@ -49,10 +50,10 @@ class SetMatrix8UseCase @Inject constructor(
             .map(AddressByte::toByte)
             .mapIndexed { index, byte ->
                 if (addressByteList.lastIndex == index) {  // Last element?
-                    listOf(byte, DATA_0_END.toByte())
+                    Pair(byte, DATA_0_END.toByte())
                 } else {
-                    listOf(byte, DATA_0_CONTINUE.toByte())
-                }.toByteArray()
+                    Pair(byte, DATA_0_CONTINUE.toByte())
+                }
             }
     }
 
