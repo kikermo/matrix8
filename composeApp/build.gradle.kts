@@ -25,6 +25,20 @@ kotlin {
             implementation(compose.components.resources)
         }
     }
+
+//    dependencies {
+//        val skikoVersion = "0.7.55"
+//        commonMainImplementation("org.jetbrains.skiko:skiko-awt-runtime-linux-arm64:$skikoVersion")
+//        commonMainImplementation("org.jetbrains.skiko:skiko:$skikoVersion")
+//        constraints {
+//            commonMainImplementation("org.jetbrains.skiko:skiko:$skikoVersion") {
+//                because("Test")
+//            }
+//            commonMainImplementation("org.jetbrains.skiko:skiko-awt-runtime-linux-arm64:$skikoVersion") {
+//                because("Test")
+//            }
+//        }
+//    }
 }
 
 
