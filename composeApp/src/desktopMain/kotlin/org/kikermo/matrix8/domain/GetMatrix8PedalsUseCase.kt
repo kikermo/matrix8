@@ -11,30 +11,30 @@ class GetMatrix8PedalsUseCase @Inject constructor(
         Pedal(
             ioChannel = 1,
             text = "Tube Screamer",
-            textColour = Color.White,
+            textColour = Color.White.value,
             enabled = false,
-            bgColour = Color(0xff4ea541)
+            bgColour = Color(0xff4ea541).value
         ),
         Pedal(
             ioChannel = 2,
             text = "Blue Crab",
-            textColour = Color(0xFF2196F3),
+            textColour = Color(0xFF2196F3).value,
             enabled = false,
-            bgColour = Color.Black
+            bgColour = Color.Black.value
         ),
         Pedal(
             ioChannel = 3,
             text = "Booster",
-            textColour = Color(0xFFFFFFFF),
+            textColour = Color(0xFFFFFFFF).value,
             enabled = false,
-            bgColour = Color(0xFF3F51B5)
+            bgColour = Color(0xFF3F51B5).value
         ),
         Pedal(
             ioChannel = 4,
             text = "ShimVerb",
-            textColour = Color(0xFFFFFFFF),
+            textColour = Color(0xFFFFFFFF).value,
             enabled = false,
-            bgColour = Color(0xFF424242)
+            bgColour = Color(0xFF424242).value
         ),
     )
 

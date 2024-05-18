@@ -4,12 +4,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.kikermo.matrix8.di.Inject
 import org.kikermo.matrix8.domain.model.Pedal
-import org.kikermo.matrix8.repository.I2CPeripheral
+import org.kikermo.matrix8.io.Matrix8I2CPeripheral
 import org.kikermo.matrix8.repository.persistence.MatrixPersister
 
 class SetMatrix8UseCase @Inject constructor(
     private val matrixPersister: MatrixPersister,
-    private val i2CPeripheral: I2CPeripheral,
+    private val i2CPeripheral: Matrix8I2CPeripheral,
 ) {
     suspend operator fun invoke(pedals: List<Pedal>): List<Pedal> {
         return withContext(Dispatchers.IO) {

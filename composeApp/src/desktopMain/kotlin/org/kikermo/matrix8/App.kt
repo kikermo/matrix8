@@ -10,6 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.kikermo.matrix8.domain.model.Pedal
 import org.kikermo.matrix8.presentation.Matrix8ViewModel
@@ -52,8 +53,8 @@ fun PedalsLoaded(
             PedalItem(
                 text = pedal.text,
                 enabled = pedal.enabled,
-                textColour = pedal.textColour,
-                bgColour = pedal.bgColour,
+                textColour = Color(pedal.textColour),
+                bgColour = Color(pedal.bgColour),
                 clickListener = { onPedalToggled(pedal, !pedal.enabled) }
             )
         }

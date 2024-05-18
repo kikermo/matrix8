@@ -6,6 +6,7 @@ kotlin = "1.9.21"
 junit = "4.13.2"
 hilt = "2.48"
 ktgp = "0.0.9"
+org-jetbrains-kotlin-jvm = "1.9.10"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -28,3 +29,4 @@ hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.re
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 hiltPlugin = { id = "com.google.dagger.hilt.android" , version.ref = "hilt"}
+org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
