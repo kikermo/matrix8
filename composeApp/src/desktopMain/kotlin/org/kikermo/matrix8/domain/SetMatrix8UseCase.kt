@@ -20,7 +20,7 @@ class SetMatrix8UseCase @Inject constructor(
                 }
 //                val peripheralManager = PeripheralManager.getInstance()
 //                val i2cDevice = peripheralManager.openI2cDevice("I2C1", DEVICE_ADDRESS)
-                i2CPeripheral.open(DEVICE_ADDRESS)
+                i2CPeripheral.open()
                 println("------\nCommands ")
                 commands.forEach { (command,value) ->
 //                    command.forEach { println(it.toUByte().toString(2)) }
@@ -124,8 +124,7 @@ class SetMatrix8UseCase @Inject constructor(
     }
 
     companion object {
-        private const val DEVICE_ADDRESS =
-            0b1110111 // 1 1 1 0 a2 a1 a0 R/W, r/w required?
+//        private const val DEVICE_ADDRESS = 0b1110111 // 1 1 1 0 a2 a1 a0 R/W, r/w required?
         private const val DATA_0_END = 0b00000001 // X X X X X X X LDSW
         private const val DATA_0_CONTINUE = 0b00000000 // X X X X X X X LDSW
     }

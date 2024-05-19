@@ -2,7 +2,7 @@ package org.kikermo.matrix8.io
 
 interface Matrix8I2CPeripheral {
 
-    suspend fun open(deviceAddress: Int)
+    suspend fun open()
 
     suspend fun close()
 

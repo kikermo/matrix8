@@ -8,7 +8,6 @@ plugins {
 
 kotlin {
     jvm("desktop")
-//    val native = linuxArm64("native")
 
     sourceSets {
         val desktopMain by getting
@@ -27,29 +26,7 @@ kotlin {
             implementation(compose.components.resources)
 
         }
-//        nativeMain.dependencies {
-//            implementation(libs.ktgp)
-//        }
-//        val nativeMain by getting
-//        nativeMain.dependencies {
-//            implementation(libs.ktgp)
-//
-//
-//            // Kotlinx
-//            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-linuxarm64:1.7.3")
-//            implementation(kotlin("stdlib"))
-//        }
-
     }
-//    configure(listOf(native)) {
-//        val libs = "$buildDir/native/libs/usr/lib/aarch64-linux-gnu/"
-//
-//        binaries.executable()
-//        binaries.all {
-//            linkTask.dependsOn(tasks.getByPath(":nativeLibs"))
-//            linkerOpts.add("-L$libs")
-//        }
-//    }
 }
 
 
@@ -58,9 +35,10 @@ compose.desktop {
         mainClass = "org.kikermo.matrix8.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Deb, TargetFormat.Exe)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Deb, TargetFormat.Pkg)
             packageName = "org.kikermo.matrix"
             packageVersion = "1.0.0"
         }
     }
+
 }
