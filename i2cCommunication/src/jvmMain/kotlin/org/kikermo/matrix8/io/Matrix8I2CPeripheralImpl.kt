@@ -11,7 +11,7 @@ class Matrix8I2CPeripheralImpl : Matrix8I2CPeripheral {
 
     override suspend fun open() {
         pi4j {
-            adg2188 = i2c(1, deviceAddress) {
+            adg2188 = i2c(1, ADG2188_DEVICE_ADDRESS) {
                 id("ADG2188")
                 linuxFsI2CProvider()
             }
@@ -31,7 +31,7 @@ class Matrix8I2CPeripheralImpl : Matrix8I2CPeripheral {
     }
 
     companion object {
-        private const val ADG2188_ =
+        private const val ADG2188_DEVICE_ADDRESS =
             0b1110111 // 1 1 1 0 a2 a1 a0 R/W, r/w required?
     }
 }

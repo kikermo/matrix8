@@ -1,11 +1,9 @@
 package org.kikermo.matrix8.presentation
 
 import androidx.compose.runtime.Composable
-import org.kikermo.matrix8.di.i2CPeripheralBuilder
 import org.kikermo.matrix8.domain.GetMatrix8PedalsUseCase
 import org.kikermo.matrix8.domain.SetMatrix8UseCase
 import org.kikermo.matrix8.io.Matrix8I2CPeripheralFactory
-import org.kikermo.matrix8.repository.I2CPeripheral
 import org.kikermo.matrix8.repository.persistence.MatrixPersister
 
 
