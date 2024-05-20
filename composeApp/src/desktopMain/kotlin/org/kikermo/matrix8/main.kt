@@ -6,6 +6,8 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 
 fun main() = application {
+    System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO");
+
     Window(onCloseRequest = ::exitApplication) {
         App()
     }

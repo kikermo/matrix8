@@ -8,6 +8,7 @@ hilt = "2.48"
 org-jetbrains-kotlin-jvm = "1.9.10"
 pi4j = "2.3.0"
 pi4jKtx = "2.3.0"
+slf4j = "2.0.0-alpha0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -26,6 +27,8 @@ pi4j-raspberrypi = { module = "com.pi4j:pi4j-plugin-raspberrypi", version.ref = 
 pi4j-gpiod = { module = "com.pi4j:pi4j-plugin-gpiod", version.ref = "pi4j"}
 pi4j-pigpio = { module = "com.pi4j:pi4j-plugin-pigpio", version.ref = "pi4j"}
 pi4j-linuxfs = { module = "com.pi4j:pi4j-plugin-linuxfs", version.ref = "pi4j"}
+
+slf4j = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-core = { module = "com.google.dagger:hilt-core", version.ref = "hilt" }

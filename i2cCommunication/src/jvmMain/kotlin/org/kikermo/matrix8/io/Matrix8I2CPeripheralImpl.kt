@@ -16,7 +16,6 @@ class Matrix8I2CPeripheralImpl : Matrix8I2CPeripheral {
                 linuxFsI2CProvider()
             }
         }
-
     }
 
     override suspend fun close() {
