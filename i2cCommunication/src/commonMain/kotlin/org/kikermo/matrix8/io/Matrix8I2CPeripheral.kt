@@ -6,5 +6,5 @@ interface Matrix8I2CPeripheral {
 
     suspend fun close()
 
-    suspend fun sendData(commandValue: Pair<Byte, Byte>)
+    suspend fun sendData(commandValue: List<Pair<Byte, Byte>>)
 }

@@ -22,15 +22,19 @@ class Matrix8I2CPeripheralImpl : Matrix8I2CPeripheral {
         adg2188.close()
     }
 
-    override suspend fun sendData(commandValue: Pair<Byte, Byte>) {
+    @OptIn(ExperimentalStdlibApi::class)
+    override suspend fun sendData(commandValue: List<Pair<Byte, Byte>>) {
         pi4j {
-            adg2188.write(commandValue.first)
-            adg2188.write(commandValue.second)
+            commandValue.forEach {
+                println("Data bits ${it.first.toHexString()} - ${it.second.toHexString()}")
+                adg2188.write(it.first, it.second)
+            }
         }
     }
 
     companion object {
-        private const val ADG2188_DEVICE_ADDRESS =
-            0b1110111 // 1 1 1 0 a2 a1 a0 R/W, r/w required?
+        private const val ADG2188_DEVICE_ADDRESS = 0x77 // 1 1 1 0 a2 a1 a0 R/W, r/w required?
+        private const val CONTINUE_COMMAND = 0x00
+        private const val FINISH_COMMAND = 0x01
     }
 }
