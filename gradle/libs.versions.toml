@@ -5,16 +5,31 @@ compose-compiler = "1.5.5"
 kotlin = "1.9.21"
 junit = "4.13.2"
 hilt = "2.48"
+org-jetbrains-kotlin-jvm = "1.9.10"
+pi4j = "2.3.0"
+pi4jKtx = "2.3.0"
+slf4j = "2.0.0-alpha0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
+
+pi4j-ktx = { module = "com.pi4j:pi4j-ktx", version.ref = "pi4jKtx"}
+pi4j-core = { module = "com.pi4j:pi4j-core", version.ref = "pi4j"}
+pi4j-raspberrypi = { module = "com.pi4j:pi4j-plugin-raspberrypi", version.ref = "pi4j"}
+pi4j-gpiod = { module = "com.pi4j:pi4j-plugin-gpiod", version.ref = "pi4j"}
+pi4j-pigpio = { module = "com.pi4j:pi4j-plugin-pigpio", version.ref = "pi4j"}
+pi4j-linuxfs = { module = "com.pi4j:pi4j-plugin-linuxfs", version.ref = "pi4j"}
+
+slf4j = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-core = { module = "com.google.dagger:hilt-core", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
@@ -23,3 +38,4 @@ hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.re
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 hiltPlugin = { id = "com.google.dagger.hilt.android" , version.ref = "hilt"}
+org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }

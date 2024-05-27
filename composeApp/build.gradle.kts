@@ -3,7 +3,6 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-
     alias(libs.plugins.jetbrainsCompose)
 }
 
@@ -15,7 +14,12 @@ kotlin {
 
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
+            implementation(libs.slf4j)
+            implementation(libs.pi4j.linuxfs)
+
+            implementation(project(":i2cCommunication"))
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -23,22 +27,9 @@ kotlin {
             implementation(compose.uiTooling)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+
         }
     }
-
-//    dependencies {
-//        val skikoVersion = "0.7.55"
-//        commonMainImplementation("org.jetbrains.skiko:skiko-awt-runtime-linux-arm64:$skikoVersion")
-//        commonMainImplementation("org.jetbrains.skiko:skiko:$skikoVersion")
-//        constraints {
-//            commonMainImplementation("org.jetbrains.skiko:skiko:$skikoVersion") {
-//                because("Test")
-//            }
-//            commonMainImplementation("org.jetbrains.skiko:skiko-awt-runtime-linux-arm64:$skikoVersion") {
-//                because("Test")
-//            }
-//        }
-//    }
 }
 
 
@@ -47,9 +38,10 @@ compose.desktop {
         mainClass = "org.kikermo.matrix8.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Deb, TargetFormat.Pkg)
             packageName = "org.kikermo.matrix"
             packageVersion = "1.0.0"
         }
     }
+
 }

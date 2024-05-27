@@ -1,0 +1,20 @@
+plugins {
+    alias(libs.plugins.kotlinMultiplatform)
+}
+
+kotlin {
+    jvm()
+
+    sourceSets {
+        jvmMain.dependencies {
+            implementation(libs.pi4j.core)
+            implementation(libs.pi4j.raspberrypi)
+            implementation(libs.pi4j.ktx)
+
+            // I/O Provider
+            implementation(libs.pi4j.linuxfs)
+//            implementation(libs.pi4j.gpiod)
+//            implementation(libs.pi4j.pigpio)
+        }
+    }
+}
