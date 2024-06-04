@@ -1,23 +1,26 @@
 package org.kikermo.matrix8
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
+import org.kikermo.matrix8.di.matrix8Module
+import org.koin.core.context.startKoin
 
 fun main() = application {
-    System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO");
 
-    val state = WindowState(placement =  WindowPlacement.Fullscreen)
+    initApp()
+
+    val state = WindowState(placement = WindowPlacement.Fullscreen)
     Window(onCloseRequest = ::exitApplication, state = state) {
         App()
     }
 }
 
-@Preview
-@Composable
-fun AppDesktopPreview() {
-    App()
+
+private fun initApp() {
+    System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO")
+    startKoin {
+        modules(matrix8Module)
+    }
 }

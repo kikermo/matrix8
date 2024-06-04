@@ -2,12 +2,11 @@ package org.kikermo.matrix8.domain
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.kikermo.matrix8.di.Inject
 import org.kikermo.matrix8.domain.model.Pedal
 import org.kikermo.matrix8.io.Matrix8I2CPeripheral
 import org.kikermo.matrix8.repository.persistence.MatrixPersister
 
-class SetMatrix8UseCase @Inject constructor(
+class SetMatrix8UseCase(
     private val matrixPersister: MatrixPersister,
     private val i2CPeripheral: Matrix8I2CPeripheral,
 ) {

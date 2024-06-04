@@ -6,12 +6,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.kikermo.matrix8.di.Inject
 import org.kikermo.matrix8.domain.GetMatrix8PedalsUseCase
 import org.kikermo.matrix8.domain.SetMatrix8UseCase
 import org.kikermo.matrix8.domain.model.Pedal
 
-class Matrix8ViewModel @Inject constructor(
+class Matrix8ViewModel(
     private val setMatrix8UseCase: SetMatrix8UseCase,
     private val getMatrix8Pedals: GetMatrix8PedalsUseCase,
 ) {
