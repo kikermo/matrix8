@@ -4,11 +4,11 @@ compose-plugin = "1.5.11"
 compose-compiler = "1.5.5"
 kotlin = "1.9.21"
 junit = "4.13.2"
-hilt = "2.48"
 org-jetbrains-kotlin-jvm = "1.9.10"
 pi4j = "2.3.0"
 pi4jKtx = "2.3.0"
 slf4j = "2.0.0-alpha0"
+koin-bom = "3.5.6"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -30,12 +30,12 @@ pi4j-linuxfs = { module = "com.pi4j:pi4j-plugin-linuxfs", version.ref = "pi4j"}
 
 slf4j = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-hilt-core = { module = "com.google.dagger:hilt-core", version.ref = "hilt" }
-hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-compose = { module = "io.insert-koin:koin-compose" }
 
 [plugins]
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-hiltPlugin = { id = "com.google.dagger.hilt.android" , version.ref = "hilt"}
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }

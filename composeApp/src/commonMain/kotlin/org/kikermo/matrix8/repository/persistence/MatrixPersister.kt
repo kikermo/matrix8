@@ -1,8 +1,7 @@
 package org.kikermo.matrix8.repository.persistence
 
-import org.kikermo.matrix8.di.Inject
 
-class MatrixPersister @Inject constructor() {
+class MatrixPersister{
     private var matrix = Array(8) { BooleanArray(8) }
 
     fun getPreviousMatrix(): Array<BooleanArray> {

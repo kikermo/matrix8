@@ -14,28 +14,30 @@ import androidx.compose.ui.graphics.Color
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.kikermo.matrix8.domain.model.Pedal
 import org.kikermo.matrix8.presentation.Matrix8ViewModel
-import org.kikermo.matrix8.presentation.matrix8ViewmodelFactory
 import org.kikermo.matrix8.ui.components.PedalItem
 import org.kikermo.matrix8.ui.theme.ModularTheme
+import org.koin.compose.KoinContext
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun App(
-    viewModel: Matrix8ViewModel = matrix8ViewmodelFactory()
-) {
-    MaterialTheme {
-        val viewState = viewModel.viewState.collectAsState().value
+fun App() {
+    KoinContext {
+        val viewModel = koinInject<Matrix8ViewModel>()
 
-        ModularTheme {
-            // A surface container using the 'background' color from the theme
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colors.background
-            ) {
-                when (viewState) {
-                    Matrix8ViewModel.ViewState.Loading -> Loading()
-                    is Matrix8ViewModel.ViewState.PedalsLoaded -> PedalsLoaded(viewState) { pedal, enabled ->
-                        viewModel.enablePedal(enabled, pedal)
+        MaterialTheme {
+            val viewState = viewModel.viewState.collectAsState().value
+
+            ModularTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    when (viewState) {
+                        Matrix8ViewModel.ViewState.Loading -> Loading()
+                        is Matrix8ViewModel.ViewState.PedalsLoaded -> PedalsLoaded(viewState) { pedal, enabled ->
+                            viewModel.enablePedal(enabled, pedal)
+                        }
                     }
                 }
             }
