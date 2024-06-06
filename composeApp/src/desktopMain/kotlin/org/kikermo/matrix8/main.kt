@@ -11,7 +11,8 @@ fun main() = application {
 
     initApp()
 
-    val state = WindowState(placement = WindowPlacement.Fullscreen)
+//    val state = WindowState(placement = WindowPlacement.Fullscreen)
+    val state = WindowState(placement = WindowPlacement.Maximized)
     Window(onCloseRequest = ::exitApplication, state = state) {
         App()
     }
