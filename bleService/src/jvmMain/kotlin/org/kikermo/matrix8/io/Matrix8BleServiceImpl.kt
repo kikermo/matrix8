@@ -9,6 +9,7 @@ internal class Matrix8BleServiceImpl : Matrix8BleService {
         private const val UUID = "740b93ce-c198-455a-9102-43edd3f59f6c"
         private const val PATH = "/matrix8"
         private const val DEVICE_ALIAS = "Matrix8"
+        private const val DEVICE_NAME = "Matrix8"
     }
 
     private val appListener: BleApplicationListener = object : BleApplicationListener {
@@ -21,7 +22,7 @@ internal class Matrix8BleServiceImpl : Matrix8BleService {
         }
     }
 
-    private val bleApp = BleApplication(PATH, appListener)
+    private val bleApp = BleApplication(PATH, appListener, DEVICE_NAME)
     private val bleService = BleService("$PATH/s", UUID, true)
     private val matrix8Characteristic = Matrix8Characteristic(bleService)
 
