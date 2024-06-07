@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 include(":composeApp")
 include(":i2cCommunication")
 include(":bleService")
+include(":core")

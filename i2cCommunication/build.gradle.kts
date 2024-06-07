@@ -6,6 +6,10 @@ kotlin {
     jvm()
 
     sourceSets {
+        commonMain.dependencies {
+            api(project(":core"))
+            implementation(libs.coroutines)
+        }
         jvmMain.dependencies {
             implementation(libs.pi4j.core)
             implementation(libs.pi4j.raspberrypi)
