@@ -6,6 +6,10 @@ kotlin {
     jvm()
 
     sourceSets {
+        commonMain.dependencies {
+            implementation(project(":core"))
+            implementation(libs.coroutines)
+        }
         jvmMain.dependencies {
             implementation(files("libs/ble-java-0.1.jar"))
             implementation(files("libs/dbus-java-2.7.jar"))

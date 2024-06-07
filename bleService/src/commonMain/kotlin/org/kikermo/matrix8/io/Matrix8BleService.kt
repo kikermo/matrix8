@@ -5,6 +5,4 @@ interface Matrix8BleService {
     suspend fun startService()
 
     suspend fun stopService()
-
-    suspend fun setCallback(callback: (ByteArray) -> Unit)
 }

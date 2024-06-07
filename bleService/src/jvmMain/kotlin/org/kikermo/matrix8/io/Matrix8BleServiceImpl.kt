@@ -3,8 +3,17 @@ package org.kikermo.matrix8.io
 import it.tangodev.ble.BleApplication
 import it.tangodev.ble.BleApplicationListener
 import it.tangodev.ble.BleService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import org.kikermo.matrix8.domain.model.Pedal
 
-internal class Matrix8BleServiceImpl : Matrix8BleService {
+internal class Matrix8BleServiceImpl(
+    private val pedalStateFlow: MutableStateFlow<List<Pedal>>,
+    private val initialPedals: List<Pedal>,
+) : Matrix8BleService {
     companion object {
         private const val UUID = "740b93ce-c198-455a-9102-43edd3f59f6c"
         private const val PATH = "/matrix8"
@@ -34,6 +43,16 @@ internal class Matrix8BleServiceImpl : Matrix8BleService {
 
     override suspend fun startService() {
         bleApp.start()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            pedalStateFlow.collectLatest {
+                setCharacteristicValue(it)
+            }
+        }
+
+        matrix8Characteristic.matrix8Callback = {
+            pedalStateFlow.value = it.toPedalList()
+        }
     }
 
     override suspend fun stopService() {
@@ -41,7 +60,13 @@ internal class Matrix8BleServiceImpl : Matrix8BleService {
         bleApp.stop()
     }
 
-    override suspend fun setCallback(callback: (ByteArray) -> Unit) {
-        matrix8Characteristic.matrix8Callback = callback
+    private fun setCharacteristicValue(pedals: List<Pedal>) {
+        matrix8Characteristic.matrix8State = pedals.map { it.ioChannel.toByte() }.toByteArray()
+    }
+
+    private fun ByteArray.toPedalList(): List<Pedal> {
+        return map { ioChannel ->
+            initialPedals.find { it.ioChannel == ioChannel.toInt() }
+        }.mapNotNull { it }
     }
 }
