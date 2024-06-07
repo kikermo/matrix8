@@ -9,7 +9,7 @@ class SwitchPedalUseCase(
     suspend operator fun invoke(pedal: Pedal, enabled: Boolean) {
         val currentPedals = mutablePedalListStateFlow.value
         currentPedals.map { currentPedal ->
-            if (currentPedal == pedal) pedal.copy(enabled = enabled) else pedal
-        }
+            if (currentPedal == pedal) currentPedal.copy(enabled = enabled) else currentPedal
+        }.let { mutablePedalListStateFlow.value = it }
     }
 }

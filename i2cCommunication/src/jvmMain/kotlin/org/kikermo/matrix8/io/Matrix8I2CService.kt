@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import org.kikermo.matrix8.domain.model.Pedal
 
 
-class Matrix8I2CService(
+actual class Matrix8I2CService(
     private val i2CPeripheral: Matrix8I2CPeripheral,
     private val pedalsFlow: StateFlow<List<Pedal>>,
     private val matrixPersister: MatrixPersister,
@@ -18,7 +18,6 @@ class Matrix8I2CService(
             pedalsFlow.collectLatest(::setMatrix)
         }
     }
-
 
     private suspend fun setMatrix(pedals: List<Pedal>) {
         try {

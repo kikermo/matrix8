@@ -4,12 +4,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.kikermo.matrix8.domain.GetMatrix8PedalsUseCase
-import org.kikermo.matrix8.domain.SetMatrix8UseCase
+import org.kikermo.matrix8.domain.SwitchPedalUseCase
 import org.kikermo.matrix8.domain.model.Pedal
 import org.kikermo.matrix8.io.Matrix8BleServiceFactory
 import org.kikermo.matrix8.io.Matrix8I2CPeripheralFactory
+import org.kikermo.matrix8.io.Matrix8I2CService
 import org.kikermo.matrix8.presentation.Matrix8ViewModel
-import org.kikermo.matrix8.repository.persistence.MatrixPersister
+import org.kikermo.matrix8.io.MatrixPersister
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -22,10 +23,11 @@ val matrix8Module = module {
         val stateFlow: MutableStateFlow<List<Pedal>> = get()
         stateFlow.asStateFlow()
     }
-    singleOf(::SetMatrix8UseCase)
+    singleOf(::SwitchPedalUseCase)
     singleOf(::MatrixPersister)
     singleOf(::GetMatrix8PedalsUseCase)
     singleOf(::Matrix8ViewModel)
+    singleOf(::Matrix8I2CService)
 
     single {
         getInitialPedalList()

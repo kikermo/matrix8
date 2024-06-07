@@ -5,6 +5,8 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import org.kikermo.matrix8.di.matrix8Module
+import org.kikermo.matrix8.io.Matrix8I2CService
+import org.koin.compose.koinInject
 import org.koin.core.context.startKoin
 
 fun main() = application {
@@ -23,5 +25,6 @@ private fun initApp() {
     System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO")
     startKoin {
         modules(matrix8Module)
+        val i2cServer: Matrix8I2CService = koin.get()
     }
 }

@@ -1,4 +1,4 @@
-package org.kikermo.matrix8.repository.persistence
+package org.kikermo.matrix8.io
 
 
 class MatrixPersister{
