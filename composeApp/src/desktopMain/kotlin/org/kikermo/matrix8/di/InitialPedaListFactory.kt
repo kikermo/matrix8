@@ -26,7 +26,7 @@ fun getInitialPedalList() = listOf(
         bgColour = Color(0xFF3F51B5).value
     ),
     Pedal(
-        ioChannel = 3,
+        ioChannel = 4,
         text = "ShimVerb",
         textColour = Color(0xFFFFFFFF).value,
         enabled = false,

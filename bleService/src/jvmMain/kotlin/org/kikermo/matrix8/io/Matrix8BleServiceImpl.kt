@@ -50,8 +50,9 @@ internal class Matrix8BleServiceImpl(
             }
         }
 
-        matrix8Characteristic.matrix8Callback = {
-            pedalStateFlow.value = it.toPedalList()
+        matrix8Characteristic.matrix8Callback = { pedalsByteArray ->
+            println("Bytes ${pedalsByteArray.joinToString { it.toString() }}")
+            pedalStateFlow.value = pedalsByteArray.toPedalList()
         }
     }
 
@@ -60,13 +61,28 @@ internal class Matrix8BleServiceImpl(
         bleApp.stop()
     }
 
+    /**
+     *  Characteristic format, byteArray
+     *  ChannelNumber[0],Enabled[0], ChannelNumber[1],Enabled[1].......
+     */
+
     private fun setCharacteristicValue(pedals: List<Pedal>) {
-        matrix8Characteristic.matrix8State = pedals.map { it.ioChannel.toByte() }.toByteArray()
+        matrix8Characteristic.matrix8State =
+            pedals.map {
+                val channel = it.ioChannel.toByte()
+                val enabled: Byte = if (it.enabled) 1 else 0
+                listOf(channel, enabled)
+            }.flatten().toByteArray()
     }
 
     private fun ByteArray.toPedalList(): List<Pedal> {
-        return map { ioChannel ->
-            initialPedals.find { it.ioChannel == ioChannel.toInt() }
-        }.mapNotNull { it }
+        if (this.size % 2 != 0)
+            return emptyList()
+
+        return this.toList().chunked(2).mapNotNull { bytePair ->
+            val ioChannel = bytePair[0].toInt()
+            val enabled = bytePair[1] > 0
+            initialPedals.find { it.ioChannel == ioChannel }?.copy(enabled = enabled)
+        }
     }
 }
