@@ -5,14 +5,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.kikermo.matrix8.domain.GetMatrix8PedalsUseCase
-import org.kikermo.matrix8.domain.SetMatrix8UseCase
+import org.kikermo.matrix8.domain.SwitchPedalUseCase
 import org.kikermo.matrix8.domain.model.Pedal
 
 class Matrix8ViewModel(
-    private val setMatrix8UseCase: SetMatrix8UseCase,
     private val getMatrix8Pedals: GetMatrix8PedalsUseCase,
+    private val switchPedalUseCase: SwitchPedalUseCase
 ) {
     private val _mutableViewState = MutableStateFlow<ViewState>(ViewState.Loading)
     val viewState: StateFlow<ViewState>
@@ -21,19 +22,21 @@ class Matrix8ViewModel(
 
     init {
         CoroutineScope(Dispatchers.Default).launch {
-            val pedals = getMatrix8Pedals()
-            _mutableViewState.value = ViewState.PedalsLoaded(pedals)
+            getMatrix8Pedals().collectLatest { pedals ->
+                _mutableViewState.value = ViewState.PedalsLoaded(pedals)
+            }
         }
     }
 
     fun enablePedal(enabled: Boolean, pedal: Pedal) {
-        // i2c toggle
+        // pedal toggle
         CoroutineScope(Dispatchers.Default).launch {
-            val pedals = getMatrix8Pedals(Pair(pedal, enabled))
-
-            _mutableViewState.value = (ViewState.PedalsLoaded(pedals))
-
-            setMatrix8UseCase(pedals)
+//            val pedals = getMatrix8Pedals(Pair(pedal, enabled))
+//
+//            _mutableViewState.value = (ViewState.PedalsLoaded(pedals))
+//
+//            setMatrix8UseCase(pedals)
+            switchPedalUseCase(pedal = pedal, enabled = enabled)
         }
     }
 
@@ -42,6 +45,6 @@ class Matrix8ViewModel(
             val pedals: List<Pedal>
         ) : ViewState()
 
-        data object Loading: ViewState()
+        data object Loading : ViewState()
     }
 }

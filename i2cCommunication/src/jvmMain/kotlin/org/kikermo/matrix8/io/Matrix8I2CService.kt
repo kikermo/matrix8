@@ -1,33 +1,35 @@
-package org.kikermo.matrix8.domain
+package org.kikermo.matrix8.io
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.kikermo.matrix8.domain.model.Pedal
-import org.kikermo.matrix8.io.Matrix8I2CPeripheral
-import org.kikermo.matrix8.repository.persistence.MatrixPersister
 
-class SetMatrix8UseCase(
-    private val matrixPersister: MatrixPersister,
+
+actual class Matrix8I2CService(
     private val i2CPeripheral: Matrix8I2CPeripheral,
+    private val pedalsFlow: StateFlow<List<Pedal>>,
+    private val matrixPersister: MatrixPersister,
 ) {
-    suspend operator fun invoke(pedals: List<Pedal>): List<Pedal> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val commands = getCommandValueList(pedals)
-                if (commands.isEmpty()) {
-                    return@withContext pedals
-                }
-
-                i2CPeripheral.open()
-                i2CPeripheral.sendData(commands)
-                i2CPeripheral.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            return@withContext pedals
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            pedalsFlow.collectLatest(::setMatrix)
         }
     }
 
+    private suspend fun setMatrix(pedals: List<Pedal>) {
+        try {
+            val commands = getCommandValueList(pedals)
+
+            i2CPeripheral.open()
+            i2CPeripheral.sendData(commands)
+            i2CPeripheral.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
     private fun getCommandValueList(pedals: List<Pedal>): List<Pair<Byte, Byte>> {
         val oldMatrix = matrixPersister.getPreviousMatrix()
@@ -118,5 +120,4 @@ class SetMatrix8UseCase(
         private const val DATA_0_END = 0b00000001 // X X X X X X X LDSW
         private const val DATA_0_CONTINUE = 0b00000000 // X X X X X X X LDSW
     }
-
 }

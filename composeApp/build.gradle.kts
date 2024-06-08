@@ -1,7 +1,3 @@
-import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
-import org.gradle.api.internal.catalog.DefaultExternalDependencyFactory
-import org.gradle.api.internal.catalog.DefaultExternalModuleDependencyBundle
-import org.gradle.kotlin.dsl.accessors.runtime.externalModuleDependencyFor
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
@@ -23,9 +19,11 @@ kotlin {
             implementation(libs.pi4j.linuxfs)
 
             implementation(project(":i2cCommunication"))
+            implementation(project(":bleService"))
         }
 
         commonMain.dependencies {
+            implementation(project(":core"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
