@@ -8,7 +8,6 @@ import com.pi4j.platform.Platform
 
 
 class GPIOTest {
-
     companion object {
         private const val DIGITAL_OUTPUT_PIN: Int = 3
     }
@@ -19,9 +18,12 @@ class GPIOTest {
     private val config = DigitalOutputConfig.newBuilder(pi4j).address(DIGITAL_OUTPUT_PIN).build()
     private val output = provider.create(config)
 
-    fun setLED(boolean: Boolean) {
-
+    fun setLED(enabled: Boolean) {
+        if (enabled) output.high()
+        else output.low()
     }
 
-
+    fun onShutdown() {
+        pi4j.shutdown()
+    }
 }
