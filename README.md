@@ -1,7 +1,3 @@
-Certainly! Here's how you can update the README file to include instructions on generating the project JAR specifically for the `linux_arm64` architecture:
-
----
-
 # Matrix8
 
 Matrix8 is an open-source Kotlin Multiplatform (KMP) project designed to run on a Raspberry Pi. It is a guitar pedal switcher based on the ADG2188 chip, providing control over your pedal setup. Matrix8 also runs a Bluetooth Low Energy (BLE) service, allowing remote control via BLE-enabled devices. Additionally, it can render the switcher's state on a connected display using Compose Desktop.
