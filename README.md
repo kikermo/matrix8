@@ -39,6 +39,10 @@ To get started with Matrix8, you will need the following:
         ```sh
         sudo apt-get install bluez
         ```
+    - Install libdbus-java:
+        ```sh
+        sudo apt-get install libdbus-java
+        ```
 
 3. **Run the project**:
     ```sh
