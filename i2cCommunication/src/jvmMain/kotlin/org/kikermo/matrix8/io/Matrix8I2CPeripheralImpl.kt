@@ -10,15 +10,15 @@ class Matrix8I2CPeripheralImpl : Matrix8I2CPeripheral {
     private lateinit var adg2188: I2C
 
     @OptIn(ExperimentalStdlibApi::class)
-    override suspend fun sendData(commandValue: List<Pair<Byte, Byte>>) {
+    override suspend fun sendData(commandValue: List<Byte>) {
         pi4j {
             i2c(1, ADG2188_DEVICE_ADDRESS) {
                 id("ADG2188")
                 linuxFsI2CProvider()
             }.use {
                 commandValue.forEach {
-                    println("Data bits ${it.first.toHexString()} - ${it.second.toHexString()}")
-                    adg2188.write(it.first, it.second)
+                    println("Data bits ${it.toHexString()}")
+                    adg2188.write(it)
                 }
             }
         }

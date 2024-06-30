@@ -29,7 +29,7 @@ actual class Matrix8I2CService(
         }
     }
 
-    private fun getCommandValueList(pedals: List<Pedal>): List<Pair<Byte, Byte>> {
+    private fun getCommandValueList(pedals: List<Pedal>): List<Byte> {
         val oldMatrix = matrixPersister.getPreviousMatrix()
         val newMatrix = getMatrix(pedals)
         matrixPersister.updateMatrix(newMatrix)
@@ -40,11 +40,11 @@ actual class Matrix8I2CService(
             .map(AddressByte::toByte)
             .mapIndexed { index, byte ->
                 if (addressByteList.lastIndex == index) {  // Last element?
-                    Pair(byte, DATA_0_END.toByte())
+                    listOf(byte, DATA_0_END.toByte())
                 } else {
-                    Pair(byte, DATA_0_CONTINUE.toByte())
+                    listOf(byte, DATA_0_CONTINUE.toByte())
                 }
-            }
+            }.flatten()
     }
 
     private fun getAddressByteList(
