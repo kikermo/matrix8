@@ -23,9 +23,7 @@ actual class Matrix8I2CService(
         try {
             val commands = getCommandValueList(pedals)
 
-            i2CPeripheral.open()
             i2CPeripheral.sendData(commands)
-            i2CPeripheral.close()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -116,7 +114,6 @@ actual class Matrix8I2CService(
     }
 
     companion object {
-        //        private const val DEVICE_ADDRESS = 0b1110111 // 1 1 1 0 a2 a1 a0 R/W, r/w required?
         private const val DATA_0_END = 0b00000001 // X X X X X X X LDSW
         private const val DATA_0_CONTINUE = 0b00000000 // X X X X X X X LDSW
     }
