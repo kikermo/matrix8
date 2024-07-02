@@ -29,7 +29,7 @@ actual class Matrix8I2CService(
         }
     }
 
-    private fun getCommandValueList(pedals: List<Pedal>): List<Pair<Byte, Byte>> {
+    private fun getCommandValueList(pedals: List<Pedal>): List<Byte> {
         val oldMatrix = matrixPersister.getPreviousMatrix()
         val newMatrix = getMatrix(pedals)
         matrixPersister.updateMatrix(newMatrix)
@@ -40,11 +40,11 @@ actual class Matrix8I2CService(
             .map(AddressByte::toByte)
             .mapIndexed { index, byte ->
                 if (addressByteList.lastIndex == index) {  // Last element?
-                    Pair(byte, DATA_0_END.toByte())
+                    listOf(byte, DATA_0_END.toByte())
                 } else {
-                    Pair(byte, DATA_0_CONTINUE.toByte())
+                    listOf(byte, DATA_0_CONTINUE.toByte())
                 }
-            }
+            }.flatten()
     }
 
     private fun getAddressByteList(
@@ -77,24 +77,18 @@ actual class Matrix8I2CService(
             matrix[0][0] = true
             return matrix
         }
-        if (enabledPedals.size == 1) {
-            matrix[0][enabledPedals.first().ioChannel] = true
-            matrix[enabledPedals.first().ioChannel][0] = true
-            return matrix
-        }
-        enabledPedals
-            .forEachIndexed { index, pedal ->
-                when (index) {
-                    0 -> {
-                        matrix[0][pedal.ioChannel] = true
-                        matrix[pedal.ioChannel][enabledPedals[index + 1].ioChannel] = true
-                    }
-
-                    enabledPedals.lastIndex -> matrix[pedal.ioChannel][0] = true
-                    else -> matrix[pedal.ioChannel][enabledPedals[index + 1].ioChannel] = true
+        enabledPedals.forEachIndexed { index, pedal ->
+            when (index) {
+                0 -> {
+                    matrix[0][pedal.ioChannel] = true
+                    // If only 1 pedal in the list, output index should be 0 (output)
+                    val outputIndex = enabledPedals.getOrNull(1)?.ioChannel ?: 0
+                    matrix[pedal.ioChannel][outputIndex] = true
                 }
+                enabledPedals.lastIndex -> matrix[pedal.ioChannel][0] = true
+                else -> matrix[pedal.ioChannel][enabledPedals[index + 1].ioChannel] = true
             }
-
+        }
         return matrix
     }
 
@@ -105,7 +99,7 @@ actual class Matrix8I2CService(
     ) {
         fun toByte(): Byte {
             val enableBit = if (enabled) 1 else 0
-            return enableBit.shl(7).or(x.xAddressOffset().shl(3)).or(y).toByte()
+            return (((enableBit shl 7) or (x.xAddressOffset() shl 3)) or y).toByte()
         }
 
         private fun Int.xAddressOffset(): Int {
