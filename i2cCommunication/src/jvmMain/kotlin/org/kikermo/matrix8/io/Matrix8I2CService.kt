@@ -73,8 +73,10 @@ actual class Matrix8I2CService(
     private fun getMatrix(pedals: List<Pedal>): Array<BooleanArray> {
         val enabledPedals = pedals.filter { it.enabled }
         val matrix = Array(8) { BooleanArray(8) }
-        matrix[0][0] = true
-
+        if (enabledPedals.isEmpty()) {
+            matrix[0][0] = true
+            return matrix
+        }
         enabledPedals.forEachIndexed { index, pedal ->
             when (index) {
                 0 -> {
@@ -83,12 +85,10 @@ actual class Matrix8I2CService(
                     val outputIndex = enabledPedals.getOrNull(1)?.ioChannel ?: 0
                     matrix[pedal.ioChannel][outputIndex] = true
                 }
-
                 enabledPedals.lastIndex -> matrix[pedal.ioChannel][0] = true
                 else -> matrix[pedal.ioChannel][enabledPedals[index + 1].ioChannel] = true
             }
         }
-
         return matrix
     }
 
