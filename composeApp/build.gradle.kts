@@ -16,7 +16,6 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.slf4j)
-            implementation(libs.pi4j.linuxfs)
 
             implementation(project(":i2cCommunication"))
             implementation(project(":bleService"))
