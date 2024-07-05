@@ -2,6 +2,9 @@
 
 Matrix8 is an open-source Kotlin Multiplatform (KMP) project designed to run on a Raspberry Pi. It is a guitar pedal switcher based on the ADG2188 chip, providing control over your pedal setup. Matrix8 also runs a Bluetooth Low Energy (BLE) service, allowing remote control via BLE-enabled devices. Additionally, it can render the switcher's state on a connected display using Compose Desktop.
 
+<img width="844" alt="Screenshot 2024-07-03 at 14 47 05" src="https://github.com/kikermo/matrix8/assets/5659713/dd784c2b-7ba8-4b6d-8fff-b9753f8039f3">
+
+
 ## Features
 
 - **Kotlin Multiplatform**: Leverage the power of Kotlin to build and run on multiple platforms.
@@ -22,6 +25,13 @@ To get started with Matrix8, you will need the following:
 - ADG2188 chip
 - Display compatible with Raspberry Pi (e.g., HDMI or GPIO-based display)
 - BLE-enabled device for remote control
+
+### Wiring
+
+You need to create your circuit board to use ADG2188, not possible to do with a breadboard as the available packages for this chip require surface mounting soldering. Please reach out if stuck.
+
+<img width="900" alt="Screenshot 2024-06-13 at 15 27 26" src="https://github.com/kikermo/matrix8/assets/5659713/354ff6e0-9c24-48b6-b02f-928610858cbe">
+
 
 ### Installation
 
