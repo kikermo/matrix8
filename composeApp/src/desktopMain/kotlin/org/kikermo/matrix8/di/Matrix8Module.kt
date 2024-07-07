@@ -38,3 +38,36 @@ val matrix8Module = module {
         getInitialPedalList()
     }
 }
+
+
+val guitarInputStream = getInitialPedalList()
+
+
+fun aFun() {
+    guitarInputStream
+        .map(::compressor)
+        .map(::eq)
+        .map(::distortion)
+        .map(::flanger)
+        .map(::delay)
+}
+
+fun distortion(pedal: Pedal): Pedal {
+    return pedal
+}
+
+fun compressor(pedal: Pedal): Pedal {
+    return pedal
+}
+
+fun flanger(pedal: Pedal): Pedal {
+    return pedal
+}
+
+fun eq(pedal: Pedal): Pedal {
+    return pedal
+}
+
+fun delay(pedal: Pedal): Pedal {
+    return pedal
+}

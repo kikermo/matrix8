@@ -32,4 +32,18 @@ fun getInitialPedalList() = listOf(
         enabled = false,
         bgColour = Color(0xFF424242).value
     ),
+    Pedal(
+        ioChannel = 5,
+        text = "Digital Delay",
+        textColour = Color(0xFF2196F3).value,
+        enabled = false,
+        bgColour = Color(0xFFAAAAAA).value
+    ),
+    Pedal(
+        ioChannel = 6,
+        text = "Plexi Sim",
+        textColour = Color(0xFFffaa00).value,
+        enabled = false,
+        bgColour = Color(0xFF8a712c).value
+    ),
 )
