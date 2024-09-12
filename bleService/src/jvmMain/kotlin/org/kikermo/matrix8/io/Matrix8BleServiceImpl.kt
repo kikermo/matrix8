@@ -32,7 +32,9 @@ internal class Matrix8BleServiceImpl(
         writeAccess = AccessType.Write { pedalsByteArray ->
             println("Bytes ${pedalsByteArray.joinToString { it.toString() }}")
             pedalStateFlow.value = pedalsByteArray.toPedalList()
-        }
+        },
+        readAccess = AccessType.Read,
+        notifyAccess = AccessType.Notify
     )
 
     private val matrix8Service = BLEService(
