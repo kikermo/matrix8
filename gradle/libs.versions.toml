@@ -11,11 +11,15 @@ slf4j = "2.0.0-alpha0"
 koin-bom = "3.5.6"
 dbus = "3.3.2"
 coroutines = "1.8.1"
+bleserver = "0.0.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+ble-server-core = { module = "org.kikermo.bleserver:core", version.ref = "bleserver"}
+ble-server-bluez = { module = "org.kikermo.bleserver:bluez", version.ref = "bleserver"}
 
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
