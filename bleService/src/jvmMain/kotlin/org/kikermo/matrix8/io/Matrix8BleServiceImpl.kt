@@ -1,64 +1,77 @@
 package org.kikermo.matrix8.io
 
-import it.tangodev.ble.BleApplication
-import it.tangodev.ble.BleApplicationListener
-import it.tangodev.ble.BleService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.kikermo.bleserver.BLECharacteristic
+import org.kikermo.bleserver.BLECharacteristic.AccessType
+import org.kikermo.bleserver.BLEConnectionListener
+import org.kikermo.bleserver.BLEServer
+import org.kikermo.bleserver.BLEService
+import org.kikermo.bleserver.bluez.BluezBLEServerConnector
 import org.kikermo.matrix8.domain.model.Pedal
+import java.util.UUID
 
 internal class Matrix8BleServiceImpl(
     private val pedalStateFlow: MutableStateFlow<List<Pedal>>,
     private val initialPedals: List<Pedal>,
 ) : Matrix8BleService {
     companion object {
-        private const val UUID = "740b93ce-c198-455a-9102-43edd3f59f6c"
-        private const val PATH = "/matrix8"
-        private const val DEVICE_ALIAS = "Matrix8"
+        private const val SERVICE_UUID = "740b93ce-c198-455a-9102-43edd3f59f6c"
+        private const val SERVICE_NAME = "Matrix8"
         private const val DEVICE_NAME = "Matrix8"
+        private const val CHARACTERISTIC_UUID = "718b1158-3736-4620-98d6-e57321d01a70"
+        private const val CHARACTERISTIC_NAME = "pedals"
     }
 
-    private val appListener: BleApplicationListener = object : BleApplicationListener {
-        override fun deviceDisconnected() {
-            println("Device disconnected")
+    private val pedalsCharacteristic = BLECharacteristic(
+        uuid = UUID.fromString(CHARACTERISTIC_UUID),
+        name = CHARACTERISTIC_NAME,
+        writeAccess = AccessType.Write { pedalsByteArray ->
+            println("Bytes ${pedalsByteArray.joinToString { it.toString() }}")
+            pedalStateFlow.value = pedalsByteArray.toPedalList()
+        }
+    )
+
+    private val matrix8Service = BLEService(
+        uuid = UUID.fromString(SERVICE_UUID),
+        name = SERVICE_NAME,
+        characteristics = listOf(pedalsCharacteristic)
+    )
+    private val connectionListener = object : BLEConnectionListener {
+        override fun onDeviceConnected(deviceName: String, deviceAddress: String) {
+            println("device connected $deviceName, $deviceAddress")
         }
 
-        override fun deviceConnected() {
-            println("Device connected")
+        override fun onDeviceDisconnected() {
+            println("device disconnected")
         }
+
     }
-
-    private val bleApp = BleApplication(PATH, appListener, DEVICE_NAME)
-    private val bleService = BleService("$PATH/s", UUID, true)
-    private val matrix8Characteristic = Matrix8Characteristic(bleService)
-
+    private val bleServer = BLEServer(
+        services = listOf(matrix8Service),
+        serverName = DEVICE_NAME,
+        connectionListener = connectionListener,
+        bleServerConnector = BluezBLEServerConnector()
+    )
     init {
-        bleService.addCharacteristic(matrix8Characteristic)
-        bleApp.addService(bleService)
-        bleApp.setAdapterAlias(DEVICE_ALIAS)
+        bleServer.primaryService = matrix8Service
     }
 
     override suspend fun startService() {
-        bleApp.start()
+        bleServer.start()
 
         CoroutineScope(Dispatchers.IO).launch {
             pedalStateFlow.collectLatest {
                 setCharacteristicValue(it)
             }
         }
-
-        matrix8Characteristic.matrix8Callback = { pedalsByteArray ->
-            println("Bytes ${pedalsByteArray.joinToString { it.toString() }}")
-            pedalStateFlow.value = pedalsByteArray.toPedalList()
-        }
     }
 
     override suspend fun stopService() {
-        matrix8Characteristic.matrix8Callback = null
-        bleApp.stop()
+        bleServer.stop()
     }
 
     /**
@@ -67,12 +80,11 @@ internal class Matrix8BleServiceImpl(
      */
 
     private fun setCharacteristicValue(pedals: List<Pedal>) {
-        matrix8Characteristic.matrix8State =
-            pedals.map {
-                val channel = it.ioChannel.toByte()
-                val enabled: Byte = if (it.enabled) 1 else 0
-                listOf(channel, enabled)
-            }.flatten().toByteArray()
+        pedalsCharacteristic.value = pedals.map {
+            val channel = it.ioChannel.toByte()
+            val enabled: Byte = if (it.enabled) 1 else 0
+            listOf(channel, enabled)
+        }.flatten().toByteArray()
     }
 
     private fun ByteArray.toPedalList(): List<Pedal> {
