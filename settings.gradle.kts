@@ -20,5 +20,6 @@ dependencyResolutionManagement {
 
 include(":composeApp")
 include(":i2cCommunication")
+include(":gpio")
 include(":bleService")
 include(":core")

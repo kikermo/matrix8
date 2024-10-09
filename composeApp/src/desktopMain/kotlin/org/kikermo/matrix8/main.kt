@@ -11,6 +11,7 @@ import org.kikermo.matrix8.di.matrix8Module
 import org.kikermo.matrix8.io.Matrix8BleService
 import org.kikermo.matrix8.io.Matrix8I2CService
 import org.koin.core.context.startKoin
+import java.lang.Thread.sleep
 
 
 fun main() = application() {
@@ -23,6 +24,10 @@ fun main() = application() {
         App()
     }
 }
+//fun main() {
+//    initApp()
+//    println("Starting")
+//}
 
 
 private fun initApp() {

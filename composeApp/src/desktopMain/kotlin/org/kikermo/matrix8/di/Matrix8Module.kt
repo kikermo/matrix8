@@ -33,6 +33,7 @@ val matrix8Module = module {
     singleOf(::GetMatrix8PedalsUseCase)
     singleOf(::Matrix8ViewModel)
     singleOf(::Matrix8I2CService)
+    singleOf(::Matrix8GPIOService)
 
     single {
         getInitialPedalList()

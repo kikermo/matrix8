@@ -19,6 +19,7 @@ kotlin {
 
             implementation(project(":i2cCommunication"))
             implementation(project(":bleService"))
+            implementation(project(":gpio"))
         }
 
         commonMain.dependencies {
