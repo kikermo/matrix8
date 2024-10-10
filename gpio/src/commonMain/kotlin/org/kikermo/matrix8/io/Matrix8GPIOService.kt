@@ -1,3 +1,5 @@
 package org.kikermo.matrix8.io
 
-expect class Matrix8GPIOService
+expect class Matrix8GPIOService {
+    suspend fun start()
+}

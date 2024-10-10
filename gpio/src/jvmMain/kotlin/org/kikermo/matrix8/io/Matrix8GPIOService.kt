@@ -4,31 +4,37 @@ import com.pi4j.io.gpio.digital.DigitalState
 import com.pi4j.ktx.console
 import com.pi4j.ktx.io.digital.digitalOutput
 import com.pi4j.ktx.pi4j
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import org.kikermo.matrix8.domain.model.Pedal
+import org.kikermo.matrix8.domain.model.Preset
 
 actual class Matrix8GPIOService(
-    private val pedalsFlow: MutableStateFlow<List<Pedal>>,
+    private val presetFlow: StateFlow<Preset>
 ) {
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            pedalsFlow.collectLatest(::setLED)
-        }
+    actual suspend fun start() {
+        presetFlow.collectLatest(::setLEDs)
     }
 
-    private fun setLED(pedals: List<Pedal>) {
-        val digitalState = pedals.firstOrNull()?.enabled?.let(DigitalState::getState)
-            ?: return
+    private fun setLEDs(preset: Preset) {
+        // Clear all LEDs
+        setLED(LED_PIN_RED,false)
+        setLED(LED_PIN_YELLOW,false)
+        setLED(LED_PIN_GREEN,false)
+        setLED(LED_PIN_BLUE,false)
+
+        // Set selected
+        setLED(preset.toLED(), true)
+    }
+    private fun setLED(led:Int, enabled:Boolean) {
+        val digitalState = DigitalState.getState(enabled)
+
         console {
-            title("<-- Matrix 8 -->", "Setting Pins")
+            title("<-- Matrix 8 -->", "Setting LEDs")
             pi4j {
-                digitalOutput(LED_PIN_RED) {
+                providers().describe().print(System.out)
+                digitalOutput(led) {
                     id("led")
-                    name("LED Flasher")
+                    name("LED")
                     shutdown(digitalState)
                     initial(digitalState)
                     provider("gpiod-digital-output")
@@ -37,8 +43,20 @@ actual class Matrix8GPIOService(
         }
     }
 
+    private fun Preset.toLED(): Int {
+        return when(id) {
+            "A" -> LED_PIN_RED
+            "B" -> LED_PIN_BLUE
+            "C" -> LED_PIN_YELLOW
+            "D" -> LED_PIN_GREEN
+            else -> LED_PIN_RED
+        }
+    }
+
     companion object {
         private const val LED_PIN_RED = 17
         private const val LED_PIN_GREEN = 27
+        private const val LED_PIN_BLUE = 1
+        private const val LED_PIN_YELLOW = 1
     }
 }

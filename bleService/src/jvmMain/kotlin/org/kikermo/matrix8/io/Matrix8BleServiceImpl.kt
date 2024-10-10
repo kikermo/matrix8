@@ -12,23 +12,28 @@ import org.kikermo.bleserver.BLEServer
 import org.kikermo.bleserver.BLEService
 import org.kikermo.bleserver.bluez.BluezBLEServerConnector
 import org.kikermo.matrix8.domain.model.Pedal
+import org.kikermo.matrix8.domain.model.Preset
 import java.util.UUID
 
 internal class Matrix8BleServiceImpl(
     private val pedalStateFlow: MutableStateFlow<List<Pedal>>,
+    private val presetStateFlow: MutableStateFlow<Preset>,
     private val initialPedals: List<Pedal>,
+    private val initialPresets: List<Preset>
 ) : Matrix8BleService {
     companion object {
         private const val SERVICE_UUID = "740b93ce-c198-455a-9102-43edd3f59f6c"
         private const val SERVICE_NAME = "Matrix8"
         private const val DEVICE_NAME = "Matrix8"
-        private const val CHARACTERISTIC_UUID = "718b1158-3736-4620-98d6-e57321d01a70"
-        private const val CHARACTERISTIC_NAME = "pedals"
+        private const val CHARACTERISTIC_UUID_PEDALS = "718b1158-3736-4620-98d6-e57321d01a70"
+        private const val CHARACTERISTIC_UUID_PRESETS = "4fedda90-5d9b-4e32-b725-d47c2429544b"
+        private const val CHARACTERISTIC_NAME_PEDALS = "pedals"
+        private const val CHARACTERISTIC_NAME_PRESETS = "presets"
     }
 
     private val pedalsCharacteristic = BLECharacteristic(
-        uuid = UUID.fromString(CHARACTERISTIC_UUID),
-        name = CHARACTERISTIC_NAME,
+        uuid = UUID.fromString(CHARACTERISTIC_UUID_PEDALS),
+        name = CHARACTERISTIC_NAME_PEDALS,
         writeAccess = AccessType.Write { pedalsByteArray ->
             println("Bytes ${pedalsByteArray.joinToString { it.toString() }}")
             pedalStateFlow.value = pedalsByteArray.toPedalList()
@@ -37,10 +42,21 @@ internal class Matrix8BleServiceImpl(
         notifyAccess = AccessType.Notify
     )
 
+    private val presetsCharacteristic = BLECharacteristic(
+        uuid = UUID.fromString(CHARACTERISTIC_UUID_PRESETS),
+        name = CHARACTERISTIC_NAME_PRESETS,
+        writeAccess = AccessType.Write { presetByteArray ->
+            val presetIndex = presetByteArray.first().toInt() // 00-A, 01-B, 02-C, 03-D, XX-A
+            presetStateFlow.value = initialPresets.getOrNull(presetIndex)?:initialPresets.first()
+        },
+        readAccess = AccessType.Read,
+        notifyAccess = AccessType.Notify
+    )
+
     private val matrix8Service = BLEService(
         uuid = UUID.fromString(SERVICE_UUID),
         name = SERVICE_NAME,
-        characteristics = listOf(pedalsCharacteristic)
+        characteristics = listOf(pedalsCharacteristic, presetsCharacteristic)
     )
     private val connectionListener = object : BLEConnectionListener {
         override fun onDeviceConnected(deviceName: String, deviceAddress: String) {

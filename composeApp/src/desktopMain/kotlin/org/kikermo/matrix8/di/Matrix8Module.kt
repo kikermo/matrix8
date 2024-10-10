@@ -1,12 +1,17 @@
 package org.kikermo.matrix8.di
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import org.kikermo.matrix8.domain.GetMatrix8PedalsUseCase
 import org.kikermo.matrix8.domain.SwitchPedalUseCase
 import org.kikermo.matrix8.domain.model.Pedal
+import org.kikermo.matrix8.domain.model.Preset
 import org.kikermo.matrix8.io.Matrix8BleServiceFactory
+import org.kikermo.matrix8.io.Matrix8GPIOService
 import org.kikermo.matrix8.io.Matrix8I2CPeripheralFactory
 import org.kikermo.matrix8.io.Matrix8I2CService
 import org.kikermo.matrix8.io.MatrixPersister
@@ -24,10 +29,19 @@ val matrix8Module = module {
         ).create()
     }
     single<MutableStateFlow<List<Pedal>>> { MutableStateFlow(get()) }
-    single<StateFlow<List<Pedal>>> {
-        val stateFlow: MutableStateFlow<List<Pedal>> = get()
-        stateFlow.asStateFlow()
+    single<Flow<List<Pedal>>> {
+        val pedalFlow: MutableStateFlow<List<Pedal>> = get()
+        val presetFlow: MutableStateFlow<Preset> = get()
+        merge(pedalFlow, presetFlow.map { it.pedals })
     }
+    single<MutableStateFlow<Preset>> {
+        MutableStateFlow(presets.first())
+    }
+    single<StateFlow<Preset>> {
+        val presetFlow: MutableStateFlow<Preset> = get()
+        presetFlow.asStateFlow()
+    }
+
     singleOf(::SwitchPedalUseCase)
     singleOf(::MatrixPersister)
     singleOf(::GetMatrix8PedalsUseCase)
@@ -35,7 +49,5 @@ val matrix8Module = module {
     singleOf(::Matrix8I2CService)
     singleOf(::Matrix8GPIOService)
 
-    single {
-        getInitialPedalList()
-    }
+    single { presets.first().pedals }
 }

@@ -2,7 +2,7 @@ package org.kikermo.matrix8.io
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.kikermo.matrix8.domain.model.Pedal
@@ -10,7 +10,7 @@ import org.kikermo.matrix8.domain.model.Pedal
 
 actual class Matrix8I2CService(
     private val i2CPeripheral: Matrix8I2CPeripheral,
-    private val pedalsFlow: StateFlow<List<Pedal>>,
+    private val pedalsFlow: Flow<List<Pedal>>,
     private val matrixPersister: MatrixPersister,
 ) {
     init {
@@ -85,6 +85,7 @@ actual class Matrix8I2CService(
                     val outputIndex = enabledPedals.getOrNull(1)?.ioChannel ?: 0
                     matrix[pedal.ioChannel][outputIndex] = true
                 }
+
                 enabledPedals.lastIndex -> matrix[pedal.ioChannel][0] = true
                 else -> matrix[pedal.ioChannel][enabledPedals[index + 1].ioChannel] = true
             }

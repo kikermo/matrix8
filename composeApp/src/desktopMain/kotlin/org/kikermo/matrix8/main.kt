@@ -9,25 +9,30 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.kikermo.matrix8.di.matrix8Module
 import org.kikermo.matrix8.io.Matrix8BleService
+import org.kikermo.matrix8.io.Matrix8GPIOService
 import org.kikermo.matrix8.io.Matrix8I2CService
 import org.koin.core.context.startKoin
 import java.lang.Thread.sleep
 
 
-fun main() = application() {
-
+//fun main() = application() {
+//
+//    initApp()
+//
+//    val state = WindowState(placement = WindowPlacement.Fullscreen)
+//
+//    Window(onCloseRequest = ::exitApplication, state = state) {
+//        App()
+//    }
+//}
+fun main() {
     initApp()
+    println("Starting")
 
-    val state = WindowState(placement = WindowPlacement.Fullscreen)
-
-    Window(onCloseRequest = ::exitApplication, state = state) {
-        App()
+    while (true) {
+        sleep(2000L)
     }
 }
-//fun main() {
-//    initApp()
-//    println("Starting")
-//}
 
 
 private fun initApp() {
@@ -35,9 +40,11 @@ private fun initApp() {
     startKoin {
         modules(matrix8Module)
         val i2cServer: Matrix8I2CService = koin.get()
+        val gpioService: Matrix8GPIOService = koin.get()
         val bleService: Matrix8BleService = koin.get()
         CoroutineScope(Dispatchers.IO).launch {
             bleService.startService()
+            gpioService.start()
         }
     }
 }

@@ -17,6 +17,7 @@ kotlin {
 
             // I/O Provider
             api(libs.pi4j.gpiod)
+            api(libs.pi4j.pigpio)
         }
     }
 }
