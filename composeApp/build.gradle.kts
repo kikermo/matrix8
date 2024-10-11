@@ -20,6 +20,8 @@ kotlin {
             implementation(project(":i2cCommunication"))
             implementation(project(":bleService"))
             implementation(project(":gpio"))
+
+            implementation(libs.pi4j.gpiod)
         }
 
         commonMain.dependencies {

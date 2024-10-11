@@ -2,7 +2,6 @@ package org.kikermo.matrix8.io
 
 import com.pi4j.io.i2c.I2C
 import com.pi4j.ktx.io.i2c
-import com.pi4j.ktx.io.linuxFsI2CProvider
 import com.pi4j.ktx.pi4j
 
 
@@ -14,7 +13,7 @@ class Matrix8I2CPeripheralImpl : Matrix8I2CPeripheral {
         pi4j {
             i2c(1, ADG2188_DEVICE_ADDRESS) {
                 id("ADG2188")
-                linuxFsI2CProvider()
+                //     linuxFsI2CProvider()
             }.use {
                 commandValue.forEach {
                     println("Data bits ${it.toHexString()}")

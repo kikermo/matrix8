@@ -14,23 +14,27 @@ import org.kikermo.matrix8.io.Matrix8I2CService
 import org.koin.core.context.startKoin
 import java.lang.Thread.sleep
 
-
-//fun main() = application() {
-//
-//    initApp()
-//
-//    val state = WindowState(placement = WindowPlacement.Fullscreen)
-//
-//    Window(onCloseRequest = ::exitApplication, state = state) {
-//        App()
-//    }
-//}
+val runCompose = true
 fun main() {
-    initApp()
-    println("Starting")
 
-    while (true) {
-        sleep(2000L)
+    if (runCompose) {
+        application() {
+
+            initApp()
+
+            val state = WindowState(placement = WindowPlacement.Fullscreen)
+
+            Window(onCloseRequest = ::exitApplication, state = state) {
+                App()
+            }
+        }
+    } else {
+        initApp()
+        println("Starting")
+
+        while (true) {
+            sleep(2000L)
+        }
     }
 }
 

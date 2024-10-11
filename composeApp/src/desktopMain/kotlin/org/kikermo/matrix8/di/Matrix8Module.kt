@@ -25,7 +25,9 @@ val matrix8Module = module {
     single {
         Matrix8BleServiceFactory(
             initialPedalList = get(),
-            mutableStateFlow = get(),
+            pedalStateFlow = get(),
+            presetStateFlow = get(),
+            presets = get()
         ).create()
     }
     single<MutableStateFlow<List<Pedal>>> { MutableStateFlow(get()) }
@@ -50,4 +52,5 @@ val matrix8Module = module {
     singleOf(::Matrix8GPIOService)
 
     single { presets.first().pedals }
+    single { presets }
 }

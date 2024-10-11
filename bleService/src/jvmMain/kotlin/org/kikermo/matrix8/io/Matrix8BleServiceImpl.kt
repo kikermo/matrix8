@@ -47,7 +47,7 @@ internal class Matrix8BleServiceImpl(
         name = CHARACTERISTIC_NAME_PRESETS,
         writeAccess = AccessType.Write { presetByteArray ->
             val presetIndex = presetByteArray.first().toInt() // 00-A, 01-B, 02-C, 03-D, XX-A
-            presetStateFlow.value = initialPresets.getOrNull(presetIndex)?:initialPresets.first()
+            presetStateFlow.value = initialPresets.getOrNull(presetIndex) ?: initialPresets.first()
         },
         readAccess = AccessType.Read,
         notifyAccess = AccessType.Notify
@@ -74,6 +74,7 @@ internal class Matrix8BleServiceImpl(
         connectionListener = connectionListener,
         bleServerConnector = BluezBLEServerConnector()
     )
+
     init {
         bleServer.primaryService = matrix8Service
     }
@@ -85,6 +86,10 @@ internal class Matrix8BleServiceImpl(
             pedalStateFlow.collectLatest {
                 setCharacteristicValue(it)
             }
+
+            presetStateFlow.collectLatest {
+                presetsCharacteristic.value = it.toCharacteristicValue()
+            }
         }
     }
 
@@ -93,7 +98,7 @@ internal class Matrix8BleServiceImpl(
     }
 
     /**
-     *  Characteristic format, byteArray
+     *  Pedals Characteristic format, byteArray
      *  ChannelNumber[0],Enabled[0], ChannelNumber[1],Enabled[1].......
      */
 
@@ -113,6 +118,20 @@ internal class Matrix8BleServiceImpl(
             val ioChannel = bytePair[0].toInt()
             val enabled = bytePair[1] > 0
             initialPedals.find { it.ioChannel == ioChannel }?.copy(enabled = enabled)
+        }
+    }
+
+    /**
+     *  Preset Characteristic format, byteArray
+     *  00/XX -> A, 01 -> B, 02 -> C, 03-> D
+     */
+    private fun Preset.toCharacteristicValue(): ByteArray {
+        return when(id) {
+            "A" -> byteArrayOf(0)
+            "B" -> byteArrayOf(1)
+            "C" -> byteArrayOf(2)
+            "D" -> byteArrayOf(3)
+            else -> byteArrayOf(0)
         }
     }
 }

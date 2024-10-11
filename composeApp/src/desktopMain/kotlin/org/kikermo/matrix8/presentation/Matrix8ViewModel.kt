@@ -31,11 +31,6 @@ class Matrix8ViewModel(
     fun enablePedal(enabled: Boolean, pedal: Pedal) {
         // pedal toggle
         CoroutineScope(Dispatchers.Default).launch {
-//            val pedals = getMatrix8Pedals(Pair(pedal, enabled))
-//
-//            _mutableViewState.value = (ViewState.PedalsLoaded(pedals))
-//
-//            setMatrix8UseCase(pedals)
             switchPedalUseCase(pedal = pedal, enabled = enabled)
         }
     }
