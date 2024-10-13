@@ -17,8 +17,7 @@ val runCompose = true
 fun main() {
 
     if (runCompose) {
-        application() {
-
+        application {
             initApp()
 
             val state = WindowState(placement = WindowPlacement.Fullscreen)
