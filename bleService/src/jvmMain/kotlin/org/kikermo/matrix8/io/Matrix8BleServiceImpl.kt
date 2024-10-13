@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.kikermo.bleserver.BLECharacteristic
 import org.kikermo.bleserver.BLECharacteristic.AccessType
@@ -16,7 +17,6 @@ import org.kikermo.matrix8.domain.model.Preset
 import java.util.UUID
 
 internal class Matrix8BleServiceImpl(
-    private val pedalStateFlow: MutableStateFlow<List<Pedal>>,
     private val presetStateFlow: MutableStateFlow<Preset>,
     private val initialPedals: List<Pedal>,
     private val initialPresets: List<Preset>
@@ -36,7 +36,7 @@ internal class Matrix8BleServiceImpl(
         name = CHARACTERISTIC_NAME_PEDALS,
         writeAccess = AccessType.Write { pedalsByteArray ->
             println("Bytes ${pedalsByteArray.joinToString { it.toString() }}")
-            pedalStateFlow.value = pedalsByteArray.toPedalList()
+            presetStateFlow.value = presetStateFlow.value.copy(pedals = pedalsByteArray.toPedalList())
         },
         readAccess = AccessType.Read,
         notifyAccess = AccessType.Notify
@@ -83,7 +83,7 @@ internal class Matrix8BleServiceImpl(
         bleServer.start()
 
         CoroutineScope(Dispatchers.IO).launch {
-            pedalStateFlow.collectLatest {
+            presetStateFlow.map { it.pedals }.collectLatest {
                 setCharacteristicValue(it)
             }
 
