@@ -4,12 +4,13 @@ import com.pi4j.io.gpio.digital.DigitalState
 import com.pi4j.ktx.console
 import com.pi4j.ktx.io.digital.digitalOutput
 import com.pi4j.ktx.pi4j
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import org.kikermo.matrix8.domain.model.Preset
 
 actual class Matrix8GPIOService(
-    private val presetFlow: StateFlow<Preset>
+    private val presetFlow: Flow<Preset>
 ) {
     actual suspend fun start() {
         presetFlow.collectLatest(::setLEDs)

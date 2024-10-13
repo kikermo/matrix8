@@ -21,7 +21,7 @@ fun main() {
 
             initApp()
 
-            val state = WindowState(placement = WindowPlacement.Floating)
+            val state = WindowState(placement = WindowPlacement.Fullscreen)
 
             Window(onCloseRequest = ::exitApplication, state = state) {
                 App()
@@ -43,11 +43,11 @@ private fun initApp() {
     startKoin {
         modules(matrix8Module)
         //    val i2cServer: Matrix8I2CService = koin.get()
-//        val gpioService: Matrix8GPIOService = koin.get()
+        val gpioService: Matrix8GPIOService = koin.get()
         val bleService: Matrix8BleService = koin.get()
         CoroutineScope(Dispatchers.IO).launch {
             bleService.startService()
-//            gpioService.start()
+            gpioService.start()
         }
     }
 }
