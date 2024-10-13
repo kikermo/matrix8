@@ -1,7 +1,7 @@
 package org.kikermo.matrix8.io
 
 
-class MatrixPersister{
+class MatrixPersister {
     private var matrix = Array(8) { BooleanArray(8) }
 
     fun getPreviousMatrix(): Array<BooleanArray> {

@@ -17,40 +17,60 @@ import org.kikermo.matrix8.io.Matrix8I2CService
 import org.kikermo.matrix8.io.MatrixPersister
 import org.kikermo.matrix8.presentation.Matrix8ViewModel
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 
 val matrix8Module = module {
-    single { Matrix8I2CPeripheralFactory().create() }
-    single {
-        Matrix8BleServiceFactory(
-            initialPedalList = get(),
-            pedalStateFlow = get(),
-            presetStateFlow = get(),
-            presets = get()
-        ).create()
-    }
-    single<MutableStateFlow<List<Pedal>>> { MutableStateFlow(get()) }
-    single<Flow<List<Pedal>>> {
-        val pedalFlow: MutableStateFlow<List<Pedal>> = get()
-        val presetFlow: MutableStateFlow<Preset> = get()
-        merge(pedalFlow, presetFlow.map { it.pedals })
-    }
-    single<MutableStateFlow<Preset>> {
-        MutableStateFlow(presets.first())
-    }
-    single<StateFlow<Preset>> {
-        val presetFlow: MutableStateFlow<Preset> = get()
+    single<MutableStateFlow<List<Pedal>>>(named<Pedal>()) { MutableStateFlow(initialPedalList) }
+    single<MutableStateFlow<Preset>>(named<Preset>()) { MutableStateFlow(presets.first()) }
+
+    single<StateFlow<Preset>>(named<Preset>()) {
+        val presetFlow: MutableStateFlow<Preset> = get(named<Preset>())
         presetFlow.asStateFlow()
     }
 
-    singleOf(::SwitchPedalUseCase)
-    singleOf(::MatrixPersister)
-    singleOf(::GetMatrix8PedalsUseCase)
-    singleOf(::Matrix8ViewModel)
-    singleOf(::Matrix8I2CService)
-    singleOf(::Matrix8GPIOService)
+    single<Flow<List<Pedal>>>(named<Pedal>()) {
+        val pedalFlow: MutableStateFlow<List<Pedal>> = get(named<Pedal>())
+        val presetFlow: MutableStateFlow<Preset> = get(named<Preset>())
+        merge(pedalFlow,presetFlow.map { it.pedals })
+    }
 
-    single { presets.first().pedals }
-    single { presets }
+    single {
+        SwitchPedalUseCase(
+            mutablePedalListStateFlow = get(named<Pedal>())
+        )
+    }
+    single {
+        GetMatrix8PedalsUseCase(
+            pedalsFlow = get(named<Pedal>()),
+        )
+    }
+
+    singleOf(::Matrix8ViewModel)
+
+    single { Matrix8I2CPeripheralFactory().create() }
+    single {
+        Matrix8BleServiceFactory(
+            initialPedalList = initialPedalList,
+            presets = presets,
+            pedalStateFlow = get(named<Pedal>()),
+            presetStateFlow = get(named<Preset>()),
+        ).create()
+    }
+
+    singleOf(::MatrixPersister)
+    single {
+        Matrix8I2CService(
+            matrixPersister = get(),
+            pedalsFlow = get(named<Pedal>()),
+            i2CPeripheral = get()
+        )
+    }
+    single {
+        Matrix8GPIOService(
+            presetFlow = get(named<Preset>())
+        )
+    }
+    singleOf(::Matrix8GPIOService)
 }
