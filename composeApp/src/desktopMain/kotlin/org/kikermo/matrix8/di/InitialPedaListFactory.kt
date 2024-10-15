@@ -41,18 +41,20 @@ val initialPedalList = listOf(pedal1, pedal2, pedal3, pedal4)
 val presets = listOf(
     Preset(
         id = "A",
-        pedals = initialPedalList
+        pedals = initialPedalList.enanablePedals()
     ),
     Preset(
         id = "B",
-        pedals = listOf(pedal2, pedal4).map { it.copy(enabled = true) }
+        pedals = listOf(pedal2, pedal4).enanablePedals()
     ),
     Preset(
         id = "C",
-        pedals = listOf(pedal3, pedal1, pedal4).map { it.copy(enabled = true) }
+        pedals = listOf(pedal3, pedal1, pedal4).enanablePedals()
     ),
     Preset(
         id = "D",
-        pedals = listOf(pedal4).map { it.copy(enabled = true) }
+        pedals = listOf(pedal4).enanablePedals()
     )
 )
+
+private fun List<Pedal>.enanablePedals() = map { it.copy(enabled = true) }

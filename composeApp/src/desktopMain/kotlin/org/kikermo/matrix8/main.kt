@@ -13,7 +13,8 @@ import org.kikermo.matrix8.io.Matrix8GPIOService
 import org.koin.core.context.startKoin
 import java.lang.Thread.sleep
 
-val runCompose = true
+const val runCompose = true
+
 fun main() {
 
     if (runCompose) {

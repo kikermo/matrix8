@@ -17,8 +17,8 @@ import org.koin.dsl.module
 
 
 val matrix8Module = module {
+    single<List<Preset>> { presets }
     single<MutableStateFlow<Preset>> { MutableStateFlow(presets.first()) }
-
     single<Flow<Preset>> {
         val presetFlow: MutableStateFlow<Preset> = get()
         presetFlow.asStateFlow()
