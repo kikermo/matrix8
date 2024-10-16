@@ -1,16 +1,17 @@
 package org.kikermo.matrix8.io
 
+import com.pi4j.context.Context
 import com.pi4j.io.gpio.digital.DigitalState
 import com.pi4j.io.gpio.digital.PullResistance
 import com.pi4j.ktx.console
 import com.pi4j.ktx.io.digital.digitalInput
 import com.pi4j.ktx.io.digital.digitalOutput
-import com.pi4j.ktx.io.digital.listen
 import com.pi4j.ktx.io.digital.onHigh
-import com.pi4j.ktx.io.digital.onLow
 import com.pi4j.ktx.pi4j
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.kikermo.matrix8.domain.model.Preset
 import java.lang.Thread.sleep
 
@@ -19,36 +20,45 @@ actual class Matrix8GPIOService(
     private val initialPresets: List<Preset>
 ) {
     actual suspend fun start() {
-     //   presetFlow.collectLatest(::setLEDs)
-        setupSwitches()
-    }
-
-    private fun setLEDs(preset: Preset) {
-        // Clear all LEDs
-        setLED(LED_PIN_RED, false)
-        setLED(LED_PIN_GREEN, false)
-//        setLED(LED_PIN_YELLOW,false)
-//        setLED(LED_PIN_BLUE,false)
-
-        // Set selected
-        setLED(preset.toLED(), true)
-    }
-
-    private fun setLED(led: Int, enabled: Boolean) {
-        val digitalState = DigitalState.getState(enabled)
+        //   presetFlow.collectLatest(::setLEDs)
+        // setupSwitches()
 
         console {
-            title("<-- Matrix 8 -->", "Setting LEDs")
+            title("<-- Matrix 8 -->", "Setting up Switches and LEDs")
             pi4j {
-                providers().describe().print(System.out)
-                digitalOutput(led) {
-                    id("led")
-                    name("LED")
-                    shutdown(digitalState)
-                    initial(digitalState)
-                    //  providers().digitalOutput()
-                    provider("gpiod-digital-output")
-                }.run { state(digitalState) }
+                setupLED(LED_PIN_RED)
+                setupLED(LED_PIN_GREEN)
+                //    setupLED(LED_PIN_YELLOW)
+                //    setupLED(LED_PIN_BLUE)
+
+                setupSwitch(SWITCH_PIN_1)
+                setupSwitch(SWITCH_PIN_2)
+                // setupSwitch(SWITCH_PIN_3)
+                // setupSwitch(SWITCH_PIN_4)
+
+                while (true) {
+                    sleep(2000L)
+                }
+
+            }
+        }
+    }
+
+    private fun Context.setupLED(ledPin: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            digitalOutput(ledPin) {
+                id(ledPin.toName())
+                name(ledPin.toName())
+                // shutdown(enabled)
+                initial(DigitalState.LOW)
+                provider("gpiod-digital-output")
+            }.run {
+                while (true) {
+                    val presetLEDPin = presetFlow.value.toLED()
+                    val enabled = DigitalState.getState(presetLEDPin == ledPin)
+                    state(enabled)
+                    sleep(500L)
+                }
             }
         }
     }
@@ -63,32 +73,17 @@ actual class Matrix8GPIOService(
         }
     }
 
-    private fun setupSwitches() {
-        setSwitchListener(SWITCH_PIN_1)
-        setSwitchListener(SWITCH_PIN_2)
-//        setSwitchListener(SWITCH_PIN_3)
-//        setSwitchListener(SWITCH_PIN_4)
-    }
-
-    private fun setSwitchListener(switchPin: Int) {
-        console {
-            title("<-- Matrix 8 -->", "Setting Switch")
-            pi4j {
-                digitalInput(switchPin) {
-                    id("switch$switchPin")
-                    name("Switch $switchPin")
-                    pull(PullResistance.PULL_DOWN)
-                    debounce(3000L)
-                    provider("gpiod-digital-input")
-                }.run {
-                    onHigh {
-                        println("On High Pin $switchPin")
-                        presetFlow.value = switchPin.switchPinToPreset()
-                    }
-                }
-                while (true) {
-                    sleep(2000L)
-                }
+    private fun Context.setupSwitch(switchPin: Int) {
+        digitalInput(switchPin) {
+            id("switch$switchPin")
+            name("Switch $switchPin")
+            pull(PullResistance.PULL_DOWN)
+            debounce(3000L)
+            provider("gpiod-digital-input")
+        }.run {
+            onHigh {
+                println("On High Pin $switchPin")
+                presetFlow.value = switchPin.switchPinToPreset()
             }
         }
     }
@@ -114,4 +109,15 @@ actual class Matrix8GPIOService(
         private const val SWITCH_PIN_3 = 0
         private const val SWITCH_PIN_4 = 0
     }
+
+    private fun Int.toName(): String {
+        return when (this) {
+            LED_PIN_RED -> "RED_LED"
+            LED_PIN_GREEN -> "GREEN_LED"
+            LED_PIN_BLUE -> "BLUE_LED"
+            LED_PIN_YELLOW -> "YELLOW_LED"
+            else -> "GENERIC_LED"
+        }
+    }
+
 }
