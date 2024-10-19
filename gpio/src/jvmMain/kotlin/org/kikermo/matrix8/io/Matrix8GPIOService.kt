@@ -20,21 +20,18 @@ actual class Matrix8GPIOService(
     private val initialPresets: List<Preset>
 ) {
     actual suspend fun start() {
-        //   presetFlow.collectLatest(::setLEDs)
-        // setupSwitches()
-
         console {
             title("<-- Matrix 8 -->", "Setting up Switches and LEDs")
             pi4j {
                 setupLED(LED_PIN_RED)
                 setupLED(LED_PIN_GREEN)
-                //    setupLED(LED_PIN_YELLOW)
-                //    setupLED(LED_PIN_BLUE)
+                setupLED(LED_PIN_YELLOW)
+                setupLED(LED_PIN_BLUE)
 
                 setupSwitch(SWITCH_PIN_1)
                 setupSwitch(SWITCH_PIN_2)
-                // setupSwitch(SWITCH_PIN_3)
-                // setupSwitch(SWITCH_PIN_4)
+                setupSwitch(SWITCH_PIN_3)
+                setupSwitch(SWITCH_PIN_4)
 
                 while (true) {
                     sleep(2000L)
@@ -65,11 +62,11 @@ actual class Matrix8GPIOService(
 
     private fun Preset.toLED(): Int {
         return when (id) {
-            "A" -> LED_PIN_RED
-            "B" -> LED_PIN_GREEN
-            "C" -> LED_PIN_YELLOW
-            "E" -> LED_PIN_BLUE
-            else -> LED_PIN_RED
+            "A" -> LED_PIN_BLUE
+            "B" -> LED_PIN_YELLOW
+            "C" -> LED_PIN_RED
+            "D" -> LED_PIN_GREEN
+            else -> LED_PIN_BLUE
         }
     }
 
@@ -101,13 +98,13 @@ actual class Matrix8GPIOService(
     companion object {
         private const val LED_PIN_RED = 27
         private const val LED_PIN_GREEN = 17
-        private const val LED_PIN_BLUE = 0
-        private const val LED_PIN_YELLOW = 0
+        private const val LED_PIN_BLUE = 5
+        private const val LED_PIN_YELLOW = 6
 
         private const val SWITCH_PIN_1 = 22
-        private const val SWITCH_PIN_2 = 23
-        private const val SWITCH_PIN_3 = 0
-        private const val SWITCH_PIN_4 = 0
+        private const val SWITCH_PIN_2 = 16
+        private const val SWITCH_PIN_3 = 24
+        private const val SWITCH_PIN_4 = 23
     }
 
     private fun Int.toName(): String {
