@@ -120,7 +120,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 - The Raspberry Pi Foundation for the Raspberry Pi.
 - [Analog Devices](https://www.analog.com/) for the ADG2188 chip.
 - [Bluez](http://www.bluez.org/) for the Bluetooth stack.
-- [BLE-java](https://github.com/sputnikdev/bluetooth-gatt-parser) library for BLE functionality.
+- [BLE-Server](https://github.com/kikermo/ble-server) library for BLE functionality.
 - [pi4j](https://pi4j.com/) for I2C communication.
 - [Compose Desktop](https://www.jetbrains.com/lp/compose/) for rendering the UI.
 
