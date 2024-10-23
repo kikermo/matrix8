@@ -6,12 +6,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.kikermo.bleserver.BLECharacteristic
 import org.kikermo.bleserver.BLECharacteristic.AccessType
-import org.kikermo.bleserver.BLEConnectionListener
-import org.kikermo.bleserver.BLEServer
-import org.kikermo.bleserver.BLEService
-import org.kikermo.bleserver.bluez.BluezBLEServerConnector
+import org.kikermo.bleserver.bluez.dsl.bluezServerConnector
+import org.kikermo.bleserver.dsl.bleServer
 import org.kikermo.matrix8.domain.model.Pedal
 import org.kikermo.matrix8.domain.model.Preset
 import java.util.UUID
@@ -31,66 +28,67 @@ internal class Matrix8BleServiceImpl(
         private const val CHARACTERISTIC_NAME_PRESETS = "presets"
     }
 
-    private val pedalsCharacteristic = BLECharacteristic(
-        uuid = UUID.fromString(CHARACTERISTIC_UUID_PEDALS),
-        name = CHARACTERISTIC_NAME_PEDALS,
-        writeAccess = AccessType.Write { pedalsByteArray ->
-            println("Bytes ${pedalsByteArray.joinToString { it.toString() }}")
-            presetStateFlow.value = presetStateFlow.value.copy(pedals = pedalsByteArray.toPedalList())
-        },
-        readAccess = AccessType.Read,
-        notifyAccess = AccessType.Notify
-    )
+    private val bleServer by lazy {
+        bleServer {
+            serverName = DEVICE_NAME
+            bluezServerConnector()
 
-    private val presetsCharacteristic = BLECharacteristic(
-        uuid = UUID.fromString(CHARACTERISTIC_UUID_PRESETS),
-        name = CHARACTERISTIC_NAME_PRESETS,
-        writeAccess = AccessType.Write { presetByteArray ->
-            val presetIndex = presetByteArray.first().toInt() // 00-A, 01-B, 02-C, 03-D, XX-A
-            presetStateFlow.value = initialPresets.getOrNull(presetIndex) ?: initialPresets.first()
-        },
-        readAccess = AccessType.Read,
-        notifyAccess = AccessType.Notify
-    )
+            connectionListener {
+                onDeviceConnected = { deviceName: String, deviceAddress: String ->
+                    println("device connected $deviceName, $deviceAddress")
+                }
+                onDeviceDisconnected = {
+                    println("device disconnected")
+                }
+            }
 
-    private val matrix8Service = BLEService(
-        uuid = UUID.fromString(SERVICE_UUID),
-        name = SERVICE_NAME,
-        characteristics = listOf(pedalsCharacteristic, presetsCharacteristic)
-    )
-    private val connectionListener = object : BLEConnectionListener {
-        override fun onDeviceConnected(deviceName: String, deviceAddress: String) {
-            println("device connected $deviceName, $deviceAddress")
+            primaryService {
+                uuid = UUID.fromString(SERVICE_UUID)
+                name = SERVICE_NAME
+
+                characteristic {
+                    uuid = UUID.fromString(CHARACTERISTIC_UUID_PEDALS)
+                    name = CHARACTERISTIC_NAME_PEDALS
+                    writeAccess = AccessType.Write { pedalsByteArray ->
+                        println("Bytes ${pedalsByteArray.joinToString { it.toString() }}")
+                        presetStateFlow.value =
+                            presetStateFlow.value.copy(pedals = pedalsByteArray.toPedalList())
+                    }
+                    readAccess = AccessType.Read
+                    notifyAccess = AccessType.Notify
+                    valueChangingAction { action ->
+                        CoroutineScope(Dispatchers.IO).launch {
+                            presetStateFlow.map { it.pedals }.collectLatest {
+                                action(getCharacteristicValue(it))
+                            }
+                        }
+                    }
+                }
+
+                characteristic {
+                    uuid = UUID.fromString(CHARACTERISTIC_UUID_PRESETS)
+                    name = CHARACTERISTIC_NAME_PRESETS
+                    writeAccess = AccessType.Write { presetByteArray ->
+                        val presetIndex = presetByteArray.first().toInt() // 00-A, 01-B, 02-C, 03-D, XX-A
+                        presetStateFlow.value =
+                            initialPresets.getOrNull(presetIndex) ?: initialPresets.first()
+                    }
+                    readAccess = AccessType.Read
+                    notifyAccess = AccessType.Notify
+                    valueChangingAction { action ->
+                        CoroutineScope(Dispatchers.IO).launch {
+                            presetStateFlow.collectLatest {
+                               action(it.toCharacteristicValue())
+                            }
+                        }
+                    }
+                }
+            }
         }
-
-        override fun onDeviceDisconnected() {
-            println("device disconnected")
-        }
-
-    }
-    private val bleServer = BLEServer(
-        services = listOf(matrix8Service),
-        serverName = DEVICE_NAME,
-        connectionListener = connectionListener,
-        bleServerConnector = BluezBLEServerConnector()
-    )
-
-    init {
-        bleServer.primaryService = matrix8Service
     }
 
     override suspend fun startService() {
         bleServer.start()
-
-        CoroutineScope(Dispatchers.IO).launch {
-            presetStateFlow.map { it.pedals }.collectLatest {
-                setCharacteristicValue(it)
-            }
-
-            presetStateFlow.collectLatest {
-                presetsCharacteristic.value = it.toCharacteristicValue()
-            }
-        }
     }
 
     override suspend fun stopService() {
@@ -102,8 +100,8 @@ internal class Matrix8BleServiceImpl(
      *  ChannelNumber[0],Enabled[0], ChannelNumber[1],Enabled[1].......
      */
 
-    private fun setCharacteristicValue(pedals: List<Pedal>) {
-        pedalsCharacteristic.value = pedals.map {
+    private fun getCharacteristicValue(pedals: List<Pedal>): ByteArray {
+        return pedals.map {
             val channel = it.ioChannel.toByte()
             val enabled: Byte = if (it.enabled) 1 else 0
             listOf(channel, enabled)
@@ -126,7 +124,7 @@ internal class Matrix8BleServiceImpl(
      *  00/XX -> A, 01 -> B, 02 -> C, 03-> D
      */
     private fun Preset.toCharacteristicValue(): ByteArray {
-        return when(id) {
+        return when (id) {
             "A" -> byteArrayOf(0)
             "B" -> byteArrayOf(1)
             "C" -> byteArrayOf(2)
