@@ -9,6 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -19,7 +20,6 @@ import org.kikermo.matrix8.ui.theme.ModularTheme
 import org.koin.compose.KoinContext
 import org.koin.compose.koinInject
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
     KoinContext {
@@ -66,6 +66,6 @@ fun PedalsLoaded(
 @Composable
 fun Loading() {
     Box {
-        CircularProgressIndicator()
+        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     }
 }
