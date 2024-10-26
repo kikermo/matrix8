@@ -7,6 +7,7 @@ import com.pi4j.ktx.console
 import com.pi4j.ktx.io.digital.digitalInput
 import com.pi4j.ktx.io.digital.digitalOutput
 import com.pi4j.ktx.io.digital.onHigh
+import com.pi4j.ktx.io.digital.piGpioProvider
 import com.pi4j.ktx.pi4j
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,8 @@ actual class Matrix8GPIOService(
         console {
             title("<-- Matrix 8 -->", "Setting up Switches and LEDs")
             pi4j {
+                providers().describe().print(System.out)
+
                 setupLED(LED_PIN_RED)
                 setupLED(LED_PIN_GREEN)
                 setupLED(LED_PIN_YELLOW)
@@ -48,7 +51,9 @@ actual class Matrix8GPIOService(
                 name(ledPin.toName())
                 // shutdown(enabled)
                 initial(DigitalState.LOW)
-                provider("gpiod-digital-output")
+                piGpioProvider()
+                provider("pigpio-digital-output")
+//                provider("gpiod-digital-output")
             }.run {
                 while (true) {
                     val presetLEDPin = presetFlow.value.toLED()
@@ -76,7 +81,9 @@ actual class Matrix8GPIOService(
             name("Switch $switchPin")
             pull(PullResistance.PULL_DOWN)
             debounce(3000L)
-            provider("gpiod-digital-input")
+            piGpioProvider()
+            provider("pigpio-digital-input")
+//            provider("gpiod-digital-input")
         }.run {
             onHigh {
                 println("On High Pin $switchPin")

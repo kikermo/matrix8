@@ -14,7 +14,7 @@ import org.kikermo.matrix8.io.Matrix8I2CService
 import org.koin.core.context.startKoin
 import java.lang.Thread.sleep
 
-const val runCompose = true
+const val runCompose = false
 
 fun main() {
 
@@ -44,11 +44,11 @@ private fun initApp() {
     startKoin {
         modules(matrix8Module)
         val i2cServer: Matrix8I2CService = koin.get()
-        val gpioService: Matrix8GPIOService = koin.get()
+       // val gpioService: Matrix8GPIOService = koin.get()
         val bleService: Matrix8BleService = koin.get()
         CoroutineScope(Dispatchers.IO).launch {
-            bleService.startService()
-            gpioService.start()
+ //           bleService.startService()
+       //     gpioService.start()
         }
     }
 }

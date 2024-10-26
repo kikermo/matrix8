@@ -21,7 +21,9 @@ kotlin {
             implementation(project(":bleService"))
             implementation(project(":gpio"))
 
-            implementation(libs.pi4j.gpiod)
+            //implementation(libs.pi4j.gpiod)
+          //  implementation(libs.pi4j.pigpio)
+            implementation(libs.pi4j.linuxfs)
         }
 
         commonMain.dependencies {
