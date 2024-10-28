@@ -31,7 +31,7 @@ actual class Matrix8I2CService(
         }
     }
 
-    private fun getCommandValueList(pedals: List<Pedal>): List<Byte> {
+    private fun getCommandValueList(pedals: List<Pedal>): List<List<Byte>> {
         val oldMatrix = matrixPersister.getPreviousMatrix()
         val newMatrix = getMatrix(pedals)
         matrixPersister.updateMatrix(newMatrix)
@@ -46,7 +46,7 @@ actual class Matrix8I2CService(
                 } else {
                     listOf(byte, DATA_0_CONTINUE.toByte())
                 }
-            }.flatten()
+            }
     }
 
     private fun getAddressByteList(

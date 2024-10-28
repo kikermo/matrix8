@@ -53,7 +53,7 @@ val presets = listOf(
     ),
     Preset(
         id = "D",
-        pedals = listOf()
+        pedals = listOf(pedal4)
     )
 )
 
