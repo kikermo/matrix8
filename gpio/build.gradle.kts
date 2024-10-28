@@ -16,8 +16,10 @@ kotlin {
             implementation(libs.pi4j.ktx)
 
             // I/O Provider
-           // api(libs.pi4j.gpiod)
-            api(libs.pi4j.pigpio)
+            api(libs.pi4j.gpiod)
+       //     api(libs.pi4j.pigpio)
+            api(libs.pi4j.linuxfs)
+
             api(libs.pi4j.raspberrypi)
         }
     }

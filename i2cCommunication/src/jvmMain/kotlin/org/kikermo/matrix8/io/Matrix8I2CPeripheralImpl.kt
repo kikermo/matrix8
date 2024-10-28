@@ -8,11 +8,13 @@ import com.pi4j.ktx.pi4j
 class Matrix8I2CPeripheralImpl : Matrix8I2CPeripheral {
     @OptIn(ExperimentalStdlibApi::class)
     override suspend fun sendData(commandValue: List<Byte>) {
-        pi4j {
+        pi4jI2C {
             providers().describe().print(System.out)
             i2c(1, ADG2188_DEVICE_ADDRESS) {
                 id("ADG2188")
-                linuxFsI2CProvider()
+//                provider("pigpio-i2c")
+               // provider("linuxfs-i2c")
+                   linuxFsI2CProvider()
             }.use { adg2188 ->
                 commandValue.forEach {
                     println("Data bits ${it.toHexString()}")

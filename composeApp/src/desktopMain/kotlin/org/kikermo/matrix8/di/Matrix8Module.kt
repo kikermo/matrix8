@@ -8,9 +8,9 @@ import org.kikermo.matrix8.domain.SwitchPedalUseCase
 import org.kikermo.matrix8.domain.model.Preset
 import org.kikermo.matrix8.io.Matrix8BleServiceFactory
 import org.kikermo.matrix8.io.Matrix8GPIOService
-import org.kikermo.matrix8.io.Matrix8I2CPeripheralFactory
 import org.kikermo.matrix8.io.Matrix8I2CService
 import org.kikermo.matrix8.io.MatrixPersister
+import org.kikermo.matrix8.io.Matrix8I2CPeripheralFactory
 import org.kikermo.matrix8.presentation.Matrix8ViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module

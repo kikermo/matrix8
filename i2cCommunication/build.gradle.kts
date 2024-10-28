@@ -17,6 +17,7 @@ kotlin {
 
             // I/O Provider
             api(libs.pi4j.linuxfs)
+            api(libs.pi4j.raspberrypi)
         }
     }
 }
