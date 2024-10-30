@@ -43,9 +43,9 @@ private fun initApp() {
     System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO")
     startKoin {
         modules(matrix8Module)
-        val i2cServer: Matrix8I2CService = koin.get()
         val gpioService: Matrix8GPIOService = koin.get()
         val bleService: Matrix8BleService = koin.get()
+        val i2cServer: Matrix8I2CService = koin.get()
         CoroutineScope(Dispatchers.IO).launch {
             bleService.startService()
             gpioService.start()

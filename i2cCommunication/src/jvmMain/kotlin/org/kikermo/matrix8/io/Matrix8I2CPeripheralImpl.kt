@@ -1,23 +1,25 @@
 package org.kikermo.matrix8.io
 
-import com.pi4j.io.i2c.I2C
 import com.pi4j.ktx.io.i2c
-import com.pi4j.ktx.pi4j
 
 
 class Matrix8I2CPeripheralImpl : Matrix8I2CPeripheral {
-    private lateinit var adg2188: I2C
-
     @OptIn(ExperimentalStdlibApi::class)
-    override suspend fun sendData(commandValue: List<Byte>) {
-        pi4j {
+    override suspend fun sendData(commandValue: List<List<Byte>>) {
+        pi4jI2C {
+            providers().describe().print(System.out)
             i2c(1, ADG2188_DEVICE_ADDRESS) {
                 id("ADG2188")
-                //     linuxFsI2CProvider()
-            }.use {
+                //linuxFsI2CProvider()
+                provider("cmd-i2c")
+            }.use { adg2188 ->
+//                commandValue.forEach {
+//                    println("Data bits ${it.toHexString()}")
+//                    adg2188.write(it)
+//                }
                 commandValue.forEach {
-                    println("Data bits ${it.toHexString()}")
-                    adg2188.write(it)
+                    println("Data bits ${it.toByteArray().toHexString()}")
+                    adg2188.write(it.toByteArray())
                 }
             }
         }

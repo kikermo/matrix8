@@ -4,18 +4,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.kikermo.matrix8.domain.model.Pedal
+import org.kikermo.matrix8.domain.model.Preset
 
 
 actual class Matrix8I2CService(
     private val i2CPeripheral: Matrix8I2CPeripheral,
-    private val pedalsFlow: Flow<List<Pedal>>,
+    private val pedalsFlow: Flow<Preset>,
     private val matrixPersister: MatrixPersister,
 ) {
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            pedalsFlow.collectLatest(::setMatrix)
+            pedalsFlow.map { it.pedals }.collectLatest(::setMatrix)
         }
     }
 
@@ -29,7 +31,7 @@ actual class Matrix8I2CService(
         }
     }
 
-    private fun getCommandValueList(pedals: List<Pedal>): List<Byte> {
+    private fun getCommandValueList(pedals: List<Pedal>): List<List<Byte>> {
         val oldMatrix = matrixPersister.getPreviousMatrix()
         val newMatrix = getMatrix(pedals)
         matrixPersister.updateMatrix(newMatrix)
@@ -44,7 +46,7 @@ actual class Matrix8I2CService(
                 } else {
                     listOf(byte, DATA_0_CONTINUE.toByte())
                 }
-            }.flatten()
+            }
     }
 
     private fun getAddressByteList(
