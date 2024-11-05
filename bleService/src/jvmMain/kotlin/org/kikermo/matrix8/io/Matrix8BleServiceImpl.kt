@@ -69,7 +69,8 @@ internal class Matrix8BleServiceImpl(
                     uuid = UUID.fromString(CHARACTERISTIC_UUID_PRESETS)
                     name = CHARACTERISTIC_NAME_PRESETS
                     writeAccess = AccessType.Write { presetByteArray ->
-                        val presetIndex = presetByteArray.first().toInt() // 00-A, 01-B, 02-C, 03-D, XX-A
+                        val presetIndex =
+                            presetByteArray.first().toInt() // 00-A, 01-B, 02-C, 03-D, XX-A
                         presetStateFlow.value =
                             initialPresets.getOrNull(presetIndex) ?: initialPresets.first()
                     }
@@ -78,7 +79,7 @@ internal class Matrix8BleServiceImpl(
                     valueChangingAction { action ->
                         CoroutineScope(Dispatchers.IO).launch {
                             presetStateFlow.collectLatest {
-                               action(it.toCharacteristicValue())
+                                action(it.toCharacteristicValue())
                             }
                         }
                     }

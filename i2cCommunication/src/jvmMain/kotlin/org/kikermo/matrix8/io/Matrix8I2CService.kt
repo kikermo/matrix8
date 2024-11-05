@@ -15,20 +15,14 @@ actual class Matrix8I2CService(
     private val pedalsFlow: Flow<Preset>,
     private val matrixPersister: MatrixPersister,
 ) {
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            pedalsFlow.map { it.pedals }.collectLatest(::setMatrix)
-        }
+    actual suspend fun start() {
+        pedalsFlow.map { it.pedals }.collectLatest(::setMatrix)
     }
 
     private suspend fun setMatrix(pedals: List<Pedal>) {
-        try {
-            val commands = getCommandValueList(pedals)
+        val commands = getCommandValueList(pedals)
 
-            i2CPeripheral.sendData(commands)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        i2CPeripheral.sendData(commands)
     }
 
     private fun getCommandValueList(pedals: List<Pedal>): List<List<Byte>> {
