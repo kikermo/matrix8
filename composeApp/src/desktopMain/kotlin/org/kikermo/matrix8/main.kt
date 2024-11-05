@@ -6,7 +6,6 @@ import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.kikermo.matrix8.di.matrix8Module
 import org.kikermo.matrix8.io.Matrix8BleService
@@ -46,15 +45,11 @@ private fun initApp() {
         modules(matrix8Module)
         val gpioService: Matrix8GPIOService = koin.get()
         val bleService: Matrix8BleService = koin.get()
-      //  val i2cServer: Matrix8I2CService = koin.get()
+        val i2cServer: Matrix8I2CService = koin.get()
         CoroutineScope(Dispatchers.IO).launch {
-           // val i2cStart = async { i2cServer.start() }
-            launch{ gpioService.start() }
-            launch{ bleService.startService() }
-         //   i2cStart.await()
-
-//            gpioService.start()
-  //          bleService.stopService()
+            launch { gpioService.start() }
+            launch { i2cServer.start() }
+            launch { bleService.startService() }
         }
     }
 }
