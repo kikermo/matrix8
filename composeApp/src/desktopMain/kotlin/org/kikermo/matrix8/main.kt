@@ -47,8 +47,9 @@ private fun initApp() {
         val bleService: Matrix8BleService = koin.get()
         val i2cServer: Matrix8I2CService = koin.get()
         CoroutineScope(Dispatchers.IO).launch {
-            bleService.startService()
-            gpioService.start()
+            launch { gpioService.start() }
+            launch { i2cServer.start() }
+            launch { bleService.startService() }
         }
     }
 }
